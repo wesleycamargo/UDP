@@ -1,5 +1,5 @@
-If you are using this example in your oun repository, 
-you need to uncomment the lines below:
+# If you are using this example in your oun repository, 
+# you need to uncomment the lines below:
 resources:
   repositories:
   - repository: UDP
