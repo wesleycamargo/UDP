@@ -1,12 +1,12 @@
-# If you are using this example in your oun repository, 
-# you need to uncomment the lines below:
-# resources:
-#   repositories:
-#   - repository: UDP
-#     type: github
-#     endpoint: devopsnights
-#     name: devopsnights/UDP
-#     ref: refs/heads/main
+If you are using this example in your oun repository, 
+you need to uncomment the lines below:
+resources:
+  repositories:
+  - repository: UDP
+    type: github
+    endpoint: devopsnights
+    name: devopsnights/UDP
+    ref: refs/heads/main
 
 trigger:
 - main
@@ -14,22 +14,12 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '12.x'
-    displayName: 'Install Node.js'
-
-  - script: |
-      npm install
-      npm run build
-    displayName: 'npm install and build'
 
 
-# extends: 
-#   # If you are using this example in your oun repository, 
-#   # you need to uncomment the next line and comment the line streight below
-#   #template: src\orchestrator.yml@UDP 
-#   template: ..\..\src\orchestrator.yml
-#   parameters:
-#     resourceType: nodejs
+extends: 
+  # If you are using this example in your oun repository, 
+  # you need to uncomment the next line and comment the line streight below
+  template: src\orchestrator.yml@UDP 
+  # template: ..\..\src\orchestrator.yml
+  parameters:
+    resourceType: nodejs
