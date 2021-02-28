@@ -12,7 +12,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 jobs:
-  - template: src\buil\dotnetcore-build-jobs.yml@UDP
+  - template: src\build\dotnetcore-build-jobs.yml@UDP
 
 # steps:
 #   - powershell: Get-ChildItem $(Build.SourcesDirectory)/examples -Recurse
