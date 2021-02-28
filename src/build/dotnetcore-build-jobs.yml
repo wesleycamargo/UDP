@@ -3,6 +3,11 @@ jobs:
     displayName: Build Job
     steps:
 
+    - powershell: Get-ChildItem -Recurse
+    - powershell: Get-ChildItem $(Build.SourcesDirectory)/examples -Recurse
+    
+    
+
     - task: DotNetCoreCLI@2
       displayName: dotnet build
       inputs:
