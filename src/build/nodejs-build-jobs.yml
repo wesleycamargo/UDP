@@ -9,7 +9,7 @@ jobs:
 
     - script: |
         ls
-        cd $(Build.SourcesDirectory)
+        cd $(Build.SourcesDirectory)/examples/nodejs
         ls 
 
     - script: |
