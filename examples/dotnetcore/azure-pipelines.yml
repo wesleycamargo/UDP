@@ -6,7 +6,7 @@ resources:
     name: wesleycamargo/UDP
 
 trigger:
-  - master
+  - feature/*
   
 pool:
   vmImage: 'ubuntu-latest'
