@@ -2,8 +2,8 @@ resources:
   repositories:
   - repository: UDP
     type: github
-    endpoint: devopsnights
-    name: devopsnights/UDP
+    endpoint: wesleycamargo
+    name: wesleycamargo/UDP
 
 trigger:
   - master
