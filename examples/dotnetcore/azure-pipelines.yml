@@ -1,0 +1,18 @@
+resources:
+  repositories:
+  - repository: UDP
+    type: github
+    endpoint: devopsnights
+    name: devopsnights/UDP
+
+trigger:
+  - master
+  
+pool:
+  vmImage: 'ubuntu-latest'
+
+extends:
+  template: src\orchestrator.yml@UDP
+  parameters:
+    resourceType: dotnetcore
+
