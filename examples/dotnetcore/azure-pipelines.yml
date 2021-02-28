@@ -12,20 +12,8 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-jobs:
-  - template: src\build\dotnetcore-build-jobs.yml@UDP
-
-# steps:
-#   - powershell: Get-ChildItem $(Build.SourcesDirectory)/examples -Recurse
-
-#   - task: DotNetCoreCLI@2
-#     displayName: dotnet build
-#     inputs:
-#       command: 'build'
-#       projects: '$(Build.SourcesDirectory)/**/*.csproj'
-
-# extends:
-#   template: src\orchestrator.yml@UDP
-#   parameters:
-#     resourceType: dotnetcore
+extends:
+  template: src\orchestrator.yml@UDP
+  parameters:
+    resourceType: dotnetcore
 
