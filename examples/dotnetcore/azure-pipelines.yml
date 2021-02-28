@@ -4,6 +4,7 @@ resources:
     type: github
     endpoint: wesleycamargo
     name: wesleycamargo/UDP
+    ref: refs/heads/feature/includeexamples
 
 trigger:
   - feature/*
