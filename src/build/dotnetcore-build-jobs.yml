@@ -7,7 +7,7 @@ jobs:
       displayName: dotnet build
       inputs:
         command: 'build'
-        projects: '**/*.csproj'
+        projects: '$(Build.SourcesDirectory)/**/*.csproj'
         
     - task: DotNetCoreCLI@2
       displayName: dotnet publish
