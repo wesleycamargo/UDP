@@ -12,8 +12,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - powershell: ls $(Build.SourcesDirectory)
-  - powershell: ls 
+  - powershell: Get-ChildItem $(Build.SourcesDirectory)/examples -Recurse
 
 # extends:
 #   template: src\orchestrator.yml@UDP
