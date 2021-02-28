@@ -11,8 +11,12 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-extends:
-  template: src\orchestrator.yml@UDP
-  parameters:
-    resourceType: dotnetcore
+steps:
+  - powershell: ls $(Build.SourcesDirectory)
+  - powershell: ls 
+
+# extends:
+#   template: src\orchestrator.yml@UDP
+#   parameters:
+#     resourceType: dotnetcore
 
