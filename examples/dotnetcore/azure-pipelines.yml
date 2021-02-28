@@ -11,14 +11,17 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-  - powershell: Get-ChildItem $(Build.SourcesDirectory)/examples -Recurse
+jobs:
+  - template: src\buil\dotnetcore-build-jobs.yml@UDP
 
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: 'build'
-      projects: '$(Build.SourcesDirectory)/**/*.csproj'
+# steps:
+#   - powershell: Get-ChildItem $(Build.SourcesDirectory)/examples -Recurse
+
+#   - task: DotNetCoreCLI@2
+#     displayName: dotnet build
+#     inputs:
+#       command: 'build'
+#       projects: '$(Build.SourcesDirectory)/**/*.csproj'
 
 # extends:
 #   template: src\orchestrator.yml@UDP
