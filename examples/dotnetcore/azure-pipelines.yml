@@ -2,12 +2,12 @@ resources:
   repositories:
   - repository: UDP
     type: github
-    endpoint: wesleycamargo
-    name: wesleycamargo/UDP
-    ref: refs/heads/feature/includeexamples
+    endpoint: devopsnights
+    name: devopsnights/UDP
+    ref: refs/heads/main
 
 trigger:
-  - feature/*
+  - main
   
 pool:
   vmImage: 'ubuntu-latest'
