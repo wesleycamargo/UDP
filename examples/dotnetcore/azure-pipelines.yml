@@ -30,6 +30,7 @@ jobs:
   
   - deployment: 
     environment: develop
+    dependsOn: BuildJob
     strategy:
       runOnce:
         deploy:
