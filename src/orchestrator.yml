@@ -15,5 +15,5 @@ jobs:
 
   - template: .\deploy\azure-webapp-deploy-jobs.yml
     parameters:
-      webAppName: ${{ parameter.webAppName }}
-      serviceConnection: ${{ parameter.serviceConnection }}
+      webAppName: ${{ parameters.webAppName }}
+      serviceConnection: ${{ parameters.serviceConnection }}
