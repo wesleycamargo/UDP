@@ -1,3 +1,9 @@
+parameters:
+- name: webAppName 
+  type: string
+- name: serviceConnection
+  type: string
+
 jobs:
   - deployment: 
     displayName: Azure Web App Deployment
@@ -17,7 +23,7 @@ jobs:
             - task: AzureRmWebAppDeployment@4
               inputs:
                 ConnectionType: 'AzureRM'
-                azureSubscription: 'ServiceConnection'
+                azureSubscription: ${{ parameters.webAppName }} # 'ServiceConnection'
                 appType: 'webApp'
-                WebAppName: 'wa-udp-dotnetcore'
+                WebAppName: ${{ parameters.webAppName }} #'wa-udp-dotnetcore'
                 packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
