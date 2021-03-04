@@ -9,3 +9,5 @@ jobs:
   
   - ${{ if eq(parameters.resourceType, 'nodejs') }}:
       - template: .\build\nodejs-build-jobs.yml 
+
+  - template: .\deploy\azure-webapp-deploy-jobs.yml
