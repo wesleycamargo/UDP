@@ -1,0 +1,28 @@
+jobs:
+  - deployment: 
+    displayName: Azure Databricks Deployment
+    environment: develop
+    dependsOn: databricksbuild
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            
+            - task: DownloadBuildArtifacts@0
+              inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'databricks'
+                downloadPath: '$(System.ArtifactsDirectory)'
+                  
+            - task: AzureResourceManagerTemplateDeployment@3
+              inputs:
+                deploymentScope: 'Resource Group'
+                azureResourceManagerConnection: 'MVP Sponsorship'
+                subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
+                action: 'Create Or Update Resource Group'
+                resourceGroupName: 'RG-ARMdatapipeline'
+                location: 'North Europe'
+                templateLocation: 'Linked artifact'
+                csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks.json'
+                deploymentMode: 'Incremental'
