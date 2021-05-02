@@ -9,7 +9,6 @@
 #     ref: refs/heads/main
 
 trigger:
-  branches:
     - main
     - feature/*
   paths:
