@@ -3,7 +3,9 @@ jobs:
     displayName: Databricks Build
     steps:
 
-    - powershell: Get-ChildItem -Recurse
+    - powershell: |
+        cd $(Build.SourcesDirectory)
+        Get-ChildItem -Recurse
 
     - task: CopyFiles@2
       inputs:
