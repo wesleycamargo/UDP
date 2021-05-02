@@ -7,16 +7,16 @@ jobs:
         cd $(Build.SourcesDirectory)
         Get-ChildItem -Recurse
 
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: '$(Build.SourcesDirectory)'
-        contents: '**' 
-        targetFolder: $(Build.ArtifactStagingDirectory)
-      displayName: 'Copy Databricks Application'
+    # - task: CopyFiles@2
+    #   inputs:
+    #     sourceFolder: '$(Build.SourcesDirectory)'
+    #     contents: '**' 
+    #     targetFolder: $(Build.ArtifactStagingDirectory)
+    #   displayName: 'Copy Databricks Application'
 
     - task: CopyFiles@2
       inputs:
-        sourceFolder: 'src\scripts\infrastructure\databricks\'
+        sourceFolder: 'srcscripts\infrastructure\databricks\'
         contents: '**' 
         targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure'
       displayName: 'Copy Databricks Infrastructure'
