@@ -22,3 +22,4 @@ jobs:
 
   - ${{ if eq(parameters.resourceType, 'databricks') }}:
       - template: .\build\databricks-build-jobs.yml 
+      - template: .\deploy\databricks-deploy-jobs.yml 
