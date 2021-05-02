@@ -1,0 +1,24 @@
+jobs:
+  - job: databricksbuild
+    displayName: Databricks Build
+    steps:
+
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)'
+        contents: '**' 
+        targetFolder: $(Build.ArtifactStagingDirectory)
+      displayName: 'Copy Databricks Application'
+
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '..\src\scripts\infrastructure\databricks\'
+        contents: '**' 
+        targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure'
+      displayName: 'Copy Databricks Infrastructure'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: databricks
+      displayName: 'Publish Databricks'

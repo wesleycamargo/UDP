@@ -13,7 +13,10 @@ jobs:
   - ${{ if eq(parameters.resourceType, 'nodejs') }}:
       - template: .\build\nodejs-build-jobs.yml 
 
-  - template: .\deploy\azure-webapp-deploy-jobs.yml
-    parameters:
-      webAppName: ${{ parameters.webAppName }}
-      serviceConnection: ${{ parameters.serviceConnection }}
+  # - template: .\deploy\azure-webapp-deploy-jobs.yml
+  #   parameters:
+  #     webAppName: ${{ parameters.webAppName }}
+  #     serviceConnection: ${{ parameters.serviceConnection }}
+
+  - ${{ if eq(parameters.resourceType, 'databricks') }}:
+      - template: .\build\databricks-build-jobs.yml 
