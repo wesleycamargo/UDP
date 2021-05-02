@@ -9,8 +9,12 @@
 #     ref: refs/heads/main
 
 trigger:
-  - main
-  - feature/*
+  branches:
+    - main
+    - feature/*
+  paths:
+    include: 
+    - examples\dotnetcore
   
 pool:
   vmImage: 'ubuntu-latest'
