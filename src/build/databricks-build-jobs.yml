@@ -1,11 +1,7 @@
 jobs:
   - job: databricksbuild
-    displayName: Databricks Build
+    displayName: Azure Databricks Build
     steps:
-
-    - powershell: |
-        cd $(Build.SourcesDirectory)
-        Get-ChildItem -Recurse
 
     # - task: CopyFiles@2
     #   inputs:

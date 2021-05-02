@@ -14,7 +14,11 @@ jobs:
                 downloadType: 'single'
                 artifactName: 'databricks'
                 downloadPath: '$(System.ArtifactsDirectory)'
-                  
+
+            - powershell: |
+                cd $(System.ArtifactsDirectory)
+                Get-ChildItem -Recurse
+
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
                 deploymentScope: 'Resource Group'
@@ -24,5 +28,5 @@ jobs:
                 resourceGroupName: 'RG-ARMdatapipeline'
                 location: 'North Europe'
                 templateLocation: 'Linked artifact'
-                csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks.json'
+                csmFile: '$(System.ArtifactsDirectory)\databricks\infrastructure\databricks.json'
                 deploymentMode: 'Incremental'
