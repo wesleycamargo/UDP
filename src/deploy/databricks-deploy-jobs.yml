@@ -85,8 +85,8 @@ jobs:
                     arguments: >
                       -clusterName ${{ cluster.name }}
                       -clusterConfigurationFile ${{ cluster.clusterConfigurationFile }}
-                      -databricksWorkspaceURL ${{ cluster.databricksWorkspaceURL }}
-                      -databricksResourceId ${{ cluster.databricksResourceId }}
                       -tenant $(tenant)
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
+                      -databricksWorkspaceName $($ArmOutputs.databricksWorkspaceName)
+                      -databricksWorkspaceResourceGroup ${{ cluster.databricksWorkspaceResourceGroup }}

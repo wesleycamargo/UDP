@@ -4,13 +4,23 @@ param (
     [Parameter()]
     [string]$clusterConfigurationFile,
     [string]$clusterName,
-    [string]$databricksWorkspaceURL,
-    [string]$databricksResourceId,
+    [string]$databricksWorkspaceName,
+    [string]$databricksWorkspaceResourceGroup,
     
     [string]$tenant,
     [string]$spnClientId,
     [string]$spnClientSecret
 )
+
+
+function Get-DatabricksWorkspace {
+    param (
+        $databricksWorkspaceName,
+        $databricksWorkspaceResourceGroup
+    )
+    
+    return az databricks workspace show -n $databricksWorkspaceName -g $databricksWorkspaceResourceGroup -o json | ConvertFrom-Json
+}
 
 #region #################### Tokens ####################
 
@@ -65,15 +75,20 @@ function Get-ManagementEndpointToken {
 
 function New-DatabricksCluster {
     param (
-        [string]$databricksWorkspaceURL,
-        [string]$databricksResourceId,
         [string]$clusterName,
         [string]$clusterConfigurationFile,
         [string]$tenant,
         [string]$spnClientId,
-        [string]$spnClientSecret
+        [string]$spnClientSecret,
+        [string]$databricksWorkspaceName,
+        [string]$databricksWorkspaceResourceGroup
     )
-    
+
+    $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+
+    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
+    $databricksResourceId = $databricksWorkspace.id
+
     $adToken = Get-ActiveDirectoryToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
     $managementEndpointToken = Get-ManagementEndpointToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
 
@@ -114,4 +129,4 @@ function New-DatabricksCluster {
     }
 }
 
-New-DatabricksCluster -databricksWorkspaceURL $databricksWorkspaceURL -databricksResourceId $databricksResourceId -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+New-DatabricksCluster -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
