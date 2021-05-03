@@ -30,3 +30,6 @@ extends:
             - name: new-cluster
               clusterConfigurationFile: $(System.ArtifactsDirectory)\databricks\application\clusterconfig.json
               databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
+            - name: new-cluster-5
+              clusterConfigurationFile: $(System.ArtifactsDirectory)\databricks\application\clusterconfig.json
+              databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
