@@ -42,7 +42,7 @@ jobs:
                     azureSubscription: $(ServiceConnectionName)
                     scriptLocation: "scriptPath"
                     scriptType: "pscore"
-                    scriptPath: '$(Build.SourcesDirectory)\databricks\infrastructure\New-DatabricksCluster.ps1'
+                    scriptPath: '$(System.ArtifactsDirectory)\databricks\infrastructure\New-DatabricksCluster.ps1'
                     arguments: >
                       -clusterName ${{ cluster.name }}
                       -clusterConfigurationFile $(System.ArtifactsDirectory)\databricks\infrastructure\clusterconfig.json
