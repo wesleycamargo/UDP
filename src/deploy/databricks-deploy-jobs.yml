@@ -72,6 +72,8 @@ jobs:
             - powershell: |
                 Write-Host "output $($ArmOutputs.databricksWorkspaceName)"
                 Write-Host "output $($ArmOutputs)"
+                Write-Host "output $(ArmOutputs.databricksWorkspaceName)"
+                Write-Host "output $(ArmOutputs)"
                 
 
             - ${{ each cluster in parameters.resourceConfiguration.infrastructure.clusters }}:
