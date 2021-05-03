@@ -22,3 +22,9 @@ extends:
   template: ..\..\src\orchestrator.yml
   parameters:
     resourceType: databricks
+    resources:
+      - name: databricks
+        type: databricks
+        infrastructure:
+          clusters:
+            - name: new-cluster

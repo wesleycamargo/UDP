@@ -1,3 +1,7 @@
+parameters:
+  - name: resourceConfiguration
+    type: object
+
 jobs:
   - deployment: 
     displayName: Azure Databricks Deployment
@@ -30,15 +34,20 @@ jobs:
                 templateLocation: 'Linked artifact'
                 csmFile: '$(System.ArtifactsDirectory)\databricks\infrastructure\databricks.json'
                 deploymentMode: 'Incremental'
-
-            - task: databricksClusterTask@0
-              inputs:
-                authMethod: 'servicePrincipal'
-                applicationId: 'e831ed10-140d-419f-a4aa-4c48965372d7'
-                spSecret: '$(SPNSecret)'
-                resourceGroup: 'RG-ARMdatapipeline'
-                workspace: 'databricks5zpayvr2rt6ki'
-                subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
-                tenantId: '47832e2c-ecb7-4a68-b534-b142a21317f0'
-                region: 'westeurope'
-                sourcePath: '$(System.ArtifactsDirectory)\databricks\infrastructure\clusterconfig.json'
+            
+            - ${{ each cluster in parameters.resourceConfiguration.infrastructure.clusters }}:
+                - task: AzureCLI@2
+                  displayName: Create Cluster
+                  inputs:
+                    azureSubscription: $(ServiceConnectionName)
+                    scriptLocation: "scriptPath"
+                    scriptType: "pscore"
+                    scriptPath: '$(Build.SourcesDirectory)\databricks\infrastructure\New-DatabricksCluster.ps1'
+                    arguments: >
+                      -clusterName ${{ cluster.name }}
+                      -clusterConfigurationFile $(System.ArtifactsDirectory)\databricks\infrastructure\clusterconfig.json
+                      -databricksWorkspaceURL "https://adb-7228147700679055.15.azuredatabricks.net"
+                      -databricksResourceId "/subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/resourceGroups/RG-ARMdatapipeline/providers/Microsoft.Databricks/workspaces/databricks5zpayvr2rt6ki"
+                      -tenant $(tenant)
+                      -spnClientId $(spnClientId)
+                      -spnClientSecret $(spnClientSecret)

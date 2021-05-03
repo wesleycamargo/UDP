@@ -1,6 +1,7 @@
 {
     "num_workers": 0,
     "cluster_name": "cluster",
+    "idempotency_token": "clusterName", 
     "spark_version": "8.1.x-scala2.12",
     "spark_conf": {
         "spark.databricks.cluster.profile": "singleNode",
@@ -21,9 +22,9 @@
     "spark_env_vars": {
         "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
     },
-    "autotermination_minutes": 30,
+    "autotermination_minutes": 15,
     "enable_elastic_disk": true,
     "cluster_source": "UI",
     "init_scripts": [],
-    "cluster_id": "0502-225652-sold716"
+    "cluster_id": ""
 }

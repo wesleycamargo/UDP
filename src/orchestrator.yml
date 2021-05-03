@@ -7,19 +7,27 @@ parameters:
 - name: serviceConnection
   default: ''  
   type: string
+- name: resources
+  type: object
   
 jobs:
-  - ${{ if eq(parameters.resourceType, 'dotnetcore') }}:    
-      - template: .\build\dotnetcore-build-jobs.yml
+
+  - ${{ each resource in resources }}:
+    - ${{ if eq(resource.type, 'databricks') }}:
+        - template: .\build\databricks-build-jobs.yml 
+        - template: .\deploy\databricks-deploy-jobs.yml 
+          parameters:
+            resourceConfiguration: ${{ resource }}
+
+
+
+  # - ${{ if eq(parameters.resourceType, 'dotnetcore') }}:    
+  #     - template: .\build\dotnetcore-build-jobs.yml
   
-  - ${{ if eq(parameters.resourceType, 'nodejs') }}:
-      - template: .\build\nodejs-build-jobs.yml 
+  # - ${{ if eq(parameters.resourceType, 'nodejs') }}:
+  #     - template: .\build\nodejs-build-jobs.yml 
 
   # - template: .\deploy\azure-webapp-deploy-jobs.yml
   #   parameters:
   #     webAppName: ${{ parameters.webAppName }}
   #     serviceConnection: ${{ parameters.serviceConnection }}
-
-  - ${{ if eq(parameters.resourceType, 'databricks') }}:
-      - template: .\build\databricks-build-jobs.yml 
-      - template: .\deploy\databricks-deploy-jobs.yml 
