@@ -1,0 +1,29 @@
+{
+    "num_workers": 0,
+    "cluster_name": "cluster",
+    "spark_version": "8.1.x-scala2.12",
+    "spark_conf": {
+        "spark.databricks.cluster.profile": "singleNode",
+        "spark.master": "local[*]",
+        "spark.databricks.delta.preview.enabled": "true"
+    },
+    "azure_attributes": {
+        "first_on_demand": 1,
+        "availability": "ON_DEMAND_AZURE",
+        "spot_bid_max_price": -1
+    },
+    "node_type_id": "Standard_DS3_v2",
+    "driver_node_type_id": "Standard_DS3_v2",
+    "ssh_public_keys": [],
+    "custom_tags": {
+        "ResourceClass": "SingleNode"
+    },
+    "spark_env_vars": {
+        "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+    },
+    "autotermination_minutes": 30,
+    "enable_elastic_disk": true,
+    "cluster_source": "UI",
+    "init_scripts": [],
+    "cluster_id": "0502-225652-sold716"
+}

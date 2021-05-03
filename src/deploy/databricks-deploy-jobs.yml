@@ -30,3 +30,15 @@ jobs:
                 templateLocation: 'Linked artifact'
                 csmFile: '$(System.ArtifactsDirectory)\databricks\infrastructure\databricks.json'
                 deploymentMode: 'Incremental'
+
+            - task: databricksClusterTask@0
+              inputs:
+                authMethod: 'servicePrincipal'
+                applicationId: 'e831ed10-140d-419f-a4aa-4c48965372d7'
+                spSecret: '$(SPNSecret)'
+                resourceGroup: 'RG-ARMdatapipeline'
+                workspace: 'databricks5zpayvr2rt6ki'
+                subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
+                tenantId: '47832e2c-ecb7-4a68-b534-b142a21317f0'
+                region: 'westeurope'
+                sourcePath: 'fds'
