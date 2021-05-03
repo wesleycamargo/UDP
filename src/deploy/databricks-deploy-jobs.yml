@@ -41,4 +41,4 @@ jobs:
                 subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
                 tenantId: '47832e2c-ecb7-4a68-b534-b142a21317f0'
                 region: 'westeurope'
-                sourcePath: 'fds'
+                sourcePath: '$(System.ArtifactsDirectory)\databricks\infrastructure\clusterconfig.json'
