@@ -19,13 +19,6 @@ jobs:
                 artifactName: 'databricks'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
-            - powershell: |
-                cd $(System.ArtifactsDirectory)
-                Get-ChildItem -Recurse
-                Write-host "tenant $(tenant)"
-                Write-host "spnClientId $(spnClientId)"
-                Write-host "spnClientSecret $(spnClientSecret)"
-
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
                 deploymentScope: 'Resource Group'
@@ -73,7 +66,14 @@ jobs:
 
                 Convert-ArmOutputToPsObject -ArmOutputString '$(ArmOutputs)' -Verbose
               displayName: "Parsing outputs from ARM deployment to pipeline variables"
-                        
+              
+              
+            
+            - powershell: |
+                Write-Host "output $($ArmOutputs.databricksWorkspaceName)"
+                Write-Host "output $($ArmOutputs)"
+                
+
             - ${{ each cluster in parameters.resourceConfiguration.infrastructure.clusters }}:
                 - task: AzureCLI@2
                   displayName: Create Cluster
