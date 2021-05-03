@@ -17,9 +17,9 @@ param (
 
 function Get-ActiveDirectoryToken {
     param (
-        $tenant = "47832e2c-ecb7-4a68-b534-b142a21317f0",
-        $spnClientId = "e831ed10-140d-419f-a4aa-4c48965372d7",
-        $spnClientSecret = "Gahz0vP-B1-D079G9d3-G2.hhPSv._B1H3"
+        $tenant,
+        $spnClientId,
+        $spnClientSecret
     )
 
     $resourceId = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
@@ -38,9 +38,9 @@ function Get-ActiveDirectoryToken {
 
 function Get-ManagementEndpointToken {
     param (
-        $tenant = "47832e2c-ecb7-4a68-b534-b142a21317f0",
-        $spnClientId = "e831ed10-140d-419f-a4aa-4c48965372d7",
-        $spnClientSecret = "Gahz0vP-B1-D079G9d3-G2.hhPSv._B1H3"
+        $tenant,
+        $spnClientId,
+        $spnClientSecret
     )
 
     $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
