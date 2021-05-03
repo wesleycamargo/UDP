@@ -25,7 +25,7 @@ jobs:
                 azureResourceManagerConnection: $(serviceConnection)
                 subscriptionId: $(subscriptionId)
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: ${{ parameters.resourceConfiguration }}
+                resourceGroupName: ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
                 location: 'North Europe'
                 templateLocation: 'Linked artifact'
                 csmFile: '$(System.ArtifactsDirectory)\databricks\infrastructure\databricks.json'
@@ -54,4 +54,4 @@ jobs:
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                      -databricksWorkspaceResourceGroup ${{ parameters.resourceConfiguration }}
+                      -databricksWorkspaceResourceGroup ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
