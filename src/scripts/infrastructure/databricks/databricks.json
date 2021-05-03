@@ -33,14 +33,14 @@
         }
     ],
     "outputs": {
-        "databricksWorkspaceId": {
-            "type": "object",
-            "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName')))]"
-        }
-        // ,
-        // "databricksWorkspaceName": {
-        //     "type": "string",
-        //     "value": "[parameters('databricksWorkspaceName')]"
+        // "databricksWorkspaceId": {
+        //     "type": "object",
+        //     "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName')))]"
         // }
+        // ,
+        "databricksWorkspaceName": {
+            "type": "string",
+            "value": "[parameters('databricksWorkspaceName')]"
+        }
     }
 }
