@@ -19,6 +19,7 @@ function Get-DatabricksWorkspace {
         $databricksWorkspaceResourceGroup
     )
     
+    az extention add -n databricks -y
     return az databricks workspace show -n $databricksWorkspaceName -g $databricksWorkspaceResourceGroup -o json | ConvertFrom-Json
 }
 
