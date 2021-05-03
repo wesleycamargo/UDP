@@ -18,12 +18,11 @@ pool:
 variables:
   - name: serviceConnection
     value: 'MVP Sponsorship'
-  - name: ServiceConnectionName
-    value: 
-  - name: spnClientId
-  - name: spnClientSecret
-  - name: subscriptionId
-  - name: tenant
+  # - name: ServiceConnectionName
+  # - name: spnClientId
+  # - name: spnClientSecret
+  # - name: subscriptionId
+  # - name: tenant
 
 extends:
   # If you are using this example in your oun repository, 
