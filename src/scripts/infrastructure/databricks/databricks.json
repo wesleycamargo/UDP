@@ -31,5 +31,15 @@
                 ]
             }
         }
-    ]
+    ],
+    "outputs": {
+        "databricksWorkspaceId": {
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName')))]"
+        },
+        "databricksWorkspaceName": {
+            "type": "object",
+            "value": "[ parameters('databricksWorkspaceName')]"
+        }
+    }
 }
