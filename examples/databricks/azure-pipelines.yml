@@ -28,3 +28,4 @@ extends:
         infrastructure:
           clusters:
             - name: new-cluster
+            - name: new-cluster-2
