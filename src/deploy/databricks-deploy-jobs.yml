@@ -22,52 +22,15 @@ jobs:
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
                 deploymentScope: 'Resource Group'
-                azureResourceManagerConnection: 'MVP Sponsorship'
-                subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
+                azureResourceManagerConnection: $(serviceConnection)
+                subscriptionId: $(subscriptionId)
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: 'RG-ARMdatapipeline'
+                resourceGroupName: ${{ parameters.resourceConfiguration }}
                 location: 'North Europe'
                 templateLocation: 'Linked artifact'
                 csmFile: '$(System.ArtifactsDirectory)\databricks\infrastructure\databricks.json'
                 deploymentMode: 'Incremental'
                 deploymentOutputs: 'ArmOutputs'
-
-            - powershell: |
-                function Convert-ArmOutputToPsObject {
-                  param (
-                    [Parameter(Mandatory=$true)]
-                    [string]
-                    $ArmOutputString
-                  )
-
-                  if ($PSBoundParameters['Verbose']) {
-                    Write-Host "Arm output json is:"
-                    Write-Host $ArmOutputString
-                  }
-
-                  $armOutputObj = $ArmOutputString | ConvertFrom-Json
-
-                  $armOutputObj.PSObject.Properties | ForEach-Object {
-                      $type = ($_.value.type).ToLower()
-                      $keyname = "ArmOutputs.$($_.name)"
-                      $value = $_.value.value
-
-                      if ($type -eq "securestring") {
-                          Write-Host "##vso[task.setvariable variable=$keyname;issecret=true]$value"
-                          Write-Host "Added Azure DevOps secret variable '$keyname' ('$type')"
-                      } elseif ($type -eq "string") {
-                          Write-Host "##vso[task.setvariable variable=$keyname]$value"
-                          Write-Host "Added Azure DevOps variable '$keyname' ('$type') with value '$value'"
-                      } else {
-                          Throw "Type '$type' is not supported for '$keyname'"
-                      }
-                  }
-                }
-
-                Convert-ArmOutputToPsObject -ArmOutputString '$(ArmOutputs)' -Verbose
-              displayName: "Parsing outputs from ARM deployment to pipeline variables"
-              
-              
             
             - powershell: |
                 Write-Host "output $($ArmOutputs.databricksWorkspaceName)"
@@ -91,4 +54,4 @@ jobs:
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                      -databricksWorkspaceResourceGroup ${{ cluster.databricksWorkspaceResourceGroup }}
+                      -databricksWorkspaceResourceGroup ${{ parameters.resourceConfiguration }}

@@ -15,6 +15,10 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  - name: serviceConnection
+    value: 'MVP Sponsorship'
+
 extends:
   # If you are using this example in your oun repository, 
   # you need to uncomment the next line and comment the line streight below
@@ -25,11 +29,10 @@ extends:
     resources:
       - name: databricks
         type: databricks
+        databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
         infrastructure:
           clusters:
             - name: new-cluster
               clusterConfigurationFile: $(System.ArtifactsDirectory)\databricks\application\clusterconfig.json
-              databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
             - name: new-cluster-5
               clusterConfigurationFile: $(System.ArtifactsDirectory)\databricks\application\clusterconfig.json
-              databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
