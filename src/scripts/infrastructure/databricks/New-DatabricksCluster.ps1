@@ -114,4 +114,4 @@ function New-DatabricksCluster {
     }
 }
 
-New-DatabricksCluster -databricksWorkspaceURL $databricksWorkspaceURL -databricksResourceId $databricksResourceId -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile
+New-DatabricksCluster -databricksWorkspaceURL $databricksWorkspaceURL -databricksResourceId $databricksResourceId -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
