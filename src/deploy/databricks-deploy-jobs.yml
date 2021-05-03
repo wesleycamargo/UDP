@@ -48,7 +48,7 @@ jobs:
                     scriptPath: '$(System.ArtifactsDirectory)\databricks\infrastructure\New-DatabricksCluster.ps1'
                     arguments: >
                       -clusterName ${{ cluster.name }}
-                      -clusterConfigurationFile $(System.ArtifactsDirectory)\databricks\infrastructure\clusterconfig.json
+                      -clusterConfigurationFile $(System.ArtifactsDirectory)\databricks\application\clusterconfig.json
                       -databricksWorkspaceURL "https://adb-7228147700679055.15.azuredatabricks.net"
                       -databricksResourceId "/subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/resourceGroups/RG-ARMdatapipeline/providers/Microsoft.Databricks/workspaces/databricks5zpayvr2rt6ki"
                       -tenant $(tenant)

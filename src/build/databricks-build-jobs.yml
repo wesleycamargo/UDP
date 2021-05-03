@@ -3,12 +3,12 @@ jobs:
     displayName: Azure Databricks Build
     steps:
 
-    # - task: CopyFiles@2
-    #   inputs:
-    #     sourceFolder: '$(Build.SourcesDirectory)'
-    #     contents: '**' 
-    #     targetFolder: $(Build.ArtifactStagingDirectory)
-    #   displayName: 'Copy Databricks Application'
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\'
+        contents: '**' 
+        targetFolder: "$(Build.ArtifactStagingDirectory)\application"
+      displayName: 'Copy Databricks Application'
 
     - task: CopyFiles@2
       inputs:
