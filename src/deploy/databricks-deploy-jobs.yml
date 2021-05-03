@@ -90,5 +90,5 @@ jobs:
                       -tenant $(tenant)
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
-                      -databricksWorkspaceName $($ArmOutputs.databricksWorkspaceName)
+                      -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
                       -databricksWorkspaceResourceGroup ${{ cluster.databricksWorkspaceResourceGroup }}
