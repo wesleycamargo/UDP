@@ -68,11 +68,14 @@ function New-DatabricksCluster {
         [string]$databricksWorkspaceURL,
         [string]$databricksResourceId,
         [string]$clusterName,
-        [string]$clusterConfigurationFile        
+        [string]$clusterConfigurationFile,
+        [string]$tenant,
+        [string]$spnClientId,
+        [string]$spnClientSecret
     )
     
-    $adToken = Get-ActiveDirectoryToken
-    $managementEndpointToken = Get-ManagementEndpointToken
+    $adToken = Get-ActiveDirectoryToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+    $managementEndpointToken = Get-ManagementEndpointToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
 
     $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $header.Add("Authorization", "Bearer $adToken")
