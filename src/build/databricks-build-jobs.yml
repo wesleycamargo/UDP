@@ -15,3 +15,9 @@ jobs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: databricks
       displayName: 'Publish Databricks'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: databricks
+      displayName: 'Publish Databricks'
