@@ -39,6 +39,22 @@ stages:
           )
       dependsOn: 
         - build
+    ${{ if eq(env, 'uat') }}:
+        condition: >-
+          and( succeeded(),
+            or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
+              )
+            )
+        dependsOn: dev
+    ${{ if eq(env, 'prd') }}:
+        condition: >-
+          and( succeeded(),
+            or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
+              )
+            )
+        dependsOn: uat
 
     jobs:
         - ${{ each resource in parameters.resources }}:
