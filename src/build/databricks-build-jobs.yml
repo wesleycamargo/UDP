@@ -13,6 +13,13 @@ jobs:
         contents: '**' 
         targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\'
       displayName: 'Copy Databricks Application'
+
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\configuration\'
+        contents: '**' 
+        targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\'
+      displayName: 'Copy Databricks Application'
     
     - task: PublishBuildArtifacts@1
       inputs:
