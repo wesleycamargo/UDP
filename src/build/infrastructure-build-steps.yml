@@ -7,7 +7,7 @@ steps:
     inputs:
       sourceFolder: 'src\scripts\infrastructure\${{ parameters.resourceConfiguration.type }}'
       contents: '**' 
-      targetFolder: '$(Build.ArtifactStagingDirectory)'
+      targetFolder: '$(Build.ArtifactStagingDirectory)\${{ parameters.resourceConfiguration.type }}'
     displayName: 'Copy Infrastructure'
   
   - task: PublishBuildArtifacts@1
