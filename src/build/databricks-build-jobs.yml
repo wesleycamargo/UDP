@@ -11,15 +11,15 @@ jobs:
       inputs:
         sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\src\'
         contents: '**' 
-        targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\'
+        targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\src\'
       displayName: 'Copy Databricks Application'
 
     - task: CopyFiles@2
       inputs:
         sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\configuration\'
         contents: '**' 
-        targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\'
-      displayName: 'Copy Databricks Application'
+        targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\configuration\'
+      displayName: 'Copy Databricks Configuration Files'
     
     - task: PublishBuildArtifacts@1
       inputs:
