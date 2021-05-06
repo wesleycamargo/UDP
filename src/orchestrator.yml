@@ -12,21 +12,33 @@ parameters:
 - name: completeInfrastructure 
   type: object
 
-jobs:
+stages:
+- stage: build
+  dependsOn: []
+  jobs:
 
-  # - ${{ if eq(parameters.completeInfrastructure.enabled, true) }}:
-  #     - template: .\build\infrastructure-build-jobs.yml
+    - ${{ each resource in parameters.resources }}:
+      - ${{ if eq(resource.type, 'databricks') }}:
+          - template: .\build\databricks-build-jobs.yml 
+            parameters: 
+              resourceConfiguration: ${{ resource }}
+          - template: .\deploy\databricks-deploy-jobs.yml 
+            parameters:
+              resourceConfiguration: ${{ resource }}
 
-  - ${{ each resource in parameters.resources }}:
-    - ${{ if eq(resource.type, 'databricks') }}:
-        - template: .\build\databricks-build-jobs.yml 
-          parameters: 
-            resourceConfiguration: ${{ resource }}
-        - template: .\deploy\databricks-deploy-jobs.yml 
-          parameters:
-            resourceConfiguration: ${{ resource }}
-
-
+- ${{ each env in parameters.environments }}:
+  # - ${{ each opCo in parameters.opCos }}:
+  - stage:  ${{ env }}
+    ${{ if eq(env, 'dev') }}:
+      condition: >-
+        and( succeeded(),
+          or( eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
+              startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
+              startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')
+            )
+          )
+      dependsOn: 
+        - build
 
   # - ${{ if eq(parameters.resourceType, 'dotnetcore') }}:    
   #     - template: .\build\dotnetcore-build-jobs.yml
