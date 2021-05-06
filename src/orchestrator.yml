@@ -9,8 +9,6 @@ parameters:
   type: string
 - name: resources
   type: object
-- name: completeInfrastructure 
-  type: object
 - name: environments 
   type: object
 
