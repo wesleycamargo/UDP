@@ -1,0 +1,17 @@
+jobs:
+  - job: databricksbuild
+    displayName: Azure Infrastructure Build
+    steps:
+
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: 'src\scripts\infrastructure\'
+        contents: '**' 
+        targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure'
+      displayName: 'Copy Infrastructure'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: infrastructure
+      displayName: 'Publish Infrastructure'

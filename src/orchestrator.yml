@@ -12,6 +12,9 @@ parameters:
   
 jobs:
 
+  - ${{ if eq(parameters.resources.completeInfrastructure, true) }}:
+      - template: .\build\infrastructure-build-jobs.yml
+
   - ${{ each resource in parameters.resources }}:
     - ${{ if eq(resource.type, 'databricks') }}:
         - template: .\build\databricks-build-jobs.yml 

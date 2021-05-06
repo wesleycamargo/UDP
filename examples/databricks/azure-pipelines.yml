@@ -31,6 +31,8 @@ extends:
   template: ..\..\src\orchestrator.yml
   parameters:
     resourceType: databricks
+    completeInfrastructure:
+      enabled: true
     resources:
       - name: databricks
         type: databricks
