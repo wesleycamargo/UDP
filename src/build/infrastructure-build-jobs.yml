@@ -1,5 +1,5 @@
 jobs:
-  - job: databricksbuild
+  - job: infrastructurebuild
     displayName: Azure Infrastructure Build
     steps:
 
