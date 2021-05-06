@@ -9,10 +9,12 @@ parameters:
   type: string
 - name: resources
   type: object
-  
+- name: completeInfrastructure 
+  type: object
+
 jobs:
 
-  - ${{ if eq(parameters.resources.completeInfrastructure, true) }}:
+  - ${{ if eq(parameters.completeInfrastructure, true) }}:
       - template: .\build\infrastructure-build-jobs.yml
 
   - ${{ each resource in parameters.resources }}:
