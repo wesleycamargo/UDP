@@ -20,6 +20,9 @@ jobs:
                 artifactName: 'databricks'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
+            - powershell: |
+                Get-ChildItem $(System.ArtifactsDirectory) -Recurse
+
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
                 deploymentScope: 'Resource Group'
