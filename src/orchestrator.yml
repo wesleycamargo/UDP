@@ -29,6 +29,7 @@ stages:
 - ${{ each env in parameters.environments }}:
   # - ${{ each opCo in parameters.opCos }}:
   - stage:  ${{ env }}
+    dependsOn: build
     ${{ if eq(env, 'dev') }}:
       condition: >-
         and( succeeded(),
