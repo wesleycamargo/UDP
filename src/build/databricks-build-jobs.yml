@@ -9,7 +9,7 @@ jobs:
 
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\'
+        sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\src\'
         contents: '**' 
         targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\'
       displayName: 'Copy Databricks Application'
