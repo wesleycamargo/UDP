@@ -1,0 +1,17 @@
+parameters:
+  - name: resourceConfiguration
+    type: object
+
+steps:
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: 'src\scripts\infrastructure\${{ parameters.resourceConfiguration.type }}'
+      contents: '**' 
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy Infrastructure'
+  
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: infrastructure
+    displayName: 'Publish Infrastructure'
