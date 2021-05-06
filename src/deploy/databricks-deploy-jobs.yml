@@ -6,7 +6,8 @@ jobs:
   - deployment: 
     displayName: Azure Databricks Deployment
     environment: develop
-    dependsOn: databricksbuild
+    dependsOn: 
+      - databricksbuild
     strategy:
       runOnce:
         deploy:

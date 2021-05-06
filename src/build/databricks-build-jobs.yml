@@ -7,24 +7,11 @@ jobs:
       inputs:
         sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\'
         contents: '**' 
-        targetFolder: '$(Build.ArtifactStagingDirectory)\application'
+        targetFolder: '$(Build.ArtifactStagingDirectory)\databricks\'
       displayName: 'Copy Databricks Application'
     
     - task: PublishBuildArtifacts@1
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: databricks
-      displayName: 'Publish Databricks'
-    
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: 'src\scripts\infrastructure\'
-        contents: '**' 
-        targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure'
-      displayName: 'Copy Infrastructure'
-
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: databricks
+        artifactName: application
       displayName: 'Publish Databricks'
