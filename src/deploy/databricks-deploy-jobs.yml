@@ -17,7 +17,14 @@ jobs:
               inputs:
                 buildType: 'current'
                 downloadType: 'single'
-                artifactName: 'databricks'
+                artifactName: 'application'
+                downloadPath: '$(System.ArtifactsDirectory)'
+
+            - task: DownloadBuildArtifacts@0
+              inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'infrastructure'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
             - powershell: |
