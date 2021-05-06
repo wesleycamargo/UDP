@@ -8,9 +8,8 @@ jobs:
     environment: develop
     strategy:
       runOnce:
-        deploy:
+        preDeploy:
           steps:
-            
             - task: DownloadBuildArtifacts@0
               inputs:
                 buildType: 'current'
@@ -96,3 +95,18 @@ jobs:
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
                       -databricksWorkspaceResourceGroup ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
+        deploy:
+          steps:
+            - task: DownloadBuildArtifacts@0
+              displayName: Downloading artifacts databricks
+              inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'databricks'
+                downloadPath: '$(System.ArtifactsDirectory)'
+            - task: UsePythonVersion@0
+              displayName: Configuring Python Version
+              inputs:
+                versionSpec: '3.x'
+                addToPath: true
+                architecture: 'x64'
