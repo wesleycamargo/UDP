@@ -38,8 +38,9 @@ extends:
         type: databricks
         databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
         infrastructure:
+          enabled: true
           clusters:
             - name: new-cluster
-              clusterConfigurationFile: $(System.ArtifactsDirectory)\databricks\application\clusterconfig.json
+              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\clusterconfig.json
             - name: new-cluster-5
-              clusterConfigurationFile: $(System.ArtifactsDirectory)\databricks\application\clusterconfig.json
+              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\clusterconfig.json

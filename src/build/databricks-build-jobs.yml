@@ -1,3 +1,7 @@
+parameters:
+  - name: resourceConfiguration
+    type: object
+
 jobs:
   - job: databricksbuild
     displayName: Azure Databricks Build
@@ -15,3 +19,8 @@ jobs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: application
       displayName: 'Publish Databricks'
+
+    - ${{ if(parameters.resourceConfiguration.enabled, true) }}:
+        - template: .\infrastructure-build-steps.yml
+          parameters:
+            resourceConfiguration: ${{ parameters.resourceConfiguration }}

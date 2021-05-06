@@ -20,6 +20,8 @@ jobs:
   - ${{ each resource in parameters.resources }}:
     - ${{ if eq(resource.type, 'databricks') }}:
         - template: .\build\databricks-build-jobs.yml 
+          parameters: 
+            resourceConfiguration: ${{ resource }}
         - template: .\deploy\databricks-deploy-jobs.yml 
           parameters:
             resourceConfiguration: ${{ resource }}
