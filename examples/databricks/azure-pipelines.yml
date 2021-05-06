@@ -41,6 +41,6 @@ extends:
           enabled: true
           clusters:
             - name: new-cluster
-              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\clusterconfig.json
+              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
             - name: new-cluster-5
-              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\clusterconfig.json
+              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
