@@ -11,12 +11,12 @@ jobs:
       inputs:
         sourceFolder: '$(Build.SourcesDirectory)\examples\databricks\'
         contents: '**' 
-        targetFolder: '$(Build.ArtifactStagingDirectory)\databricks\'
+        targetFolder: '$(Build.ArtifactStagingDirectory)\application\databricks\'
       displayName: 'Copy Databricks Application'
     
     - task: PublishBuildArtifacts@1
       inputs:
-        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)\application\'
         artifactName: application
       displayName: 'Publish Databricks'
 
