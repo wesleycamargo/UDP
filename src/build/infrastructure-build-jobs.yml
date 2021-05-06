@@ -7,7 +7,7 @@ jobs:
       inputs:
         sourceFolder: 'src\scripts\infrastructure\'
         contents: '**' 
-        targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure'
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
       displayName: 'Copy Infrastructure'
     
     - task: PublishBuildArtifacts@1
