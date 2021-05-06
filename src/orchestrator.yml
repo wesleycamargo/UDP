@@ -14,7 +14,7 @@ parameters:
 
 jobs:
 
-  - ${{ if eq(parameters.completeInfrastructure, true) }}:
+  - ${{ if eq(parameters.completeInfrastructure.enabled, true) }}:
       - template: .\build\infrastructure-build-jobs.yml
 
   - ${{ each resource in parameters.resources }}:
