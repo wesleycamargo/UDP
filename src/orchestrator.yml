@@ -22,9 +22,9 @@ stages:
           - template: .\build\databricks-build-jobs.yml 
             parameters: 
               resourceConfiguration: ${{ resource }}
-          - template: .\deploy\databricks-deploy-jobs.yml 
-            parameters:
-              resourceConfiguration: ${{ resource }}
+          # - template: .\deploy\databricks-deploy-jobs.yml 
+          #   parameters:
+          #     resourceConfiguration: ${{ resource }}
 
 - ${{ each env in parameters.environments }}:
   # - ${{ each opCo in parameters.opCos }}:
