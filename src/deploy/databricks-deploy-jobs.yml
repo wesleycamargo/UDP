@@ -28,7 +28,7 @@ jobs:
                 resourceGroupName: ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
                 location: 'North Europe'
                 templateLocation: 'Linked artifact'
-                csmFile: '$(System.ArtifactsDirectory)\databricks\infrastructure\databricks.json'
+                csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
                 deploymentMode: 'Incremental'
                 deploymentOutputs: 'ArmOutputs'
             
