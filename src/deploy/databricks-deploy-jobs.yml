@@ -81,7 +81,7 @@ jobs:
 
             
             - task: AzureCLI@2
-              displayName: Create Cluster
+              displayName: Register Databricks PAT
               inputs:
                 azureSubscription: $(ServiceConnectionName)
                 scriptLocation: "scriptPath"

@@ -33,7 +33,7 @@ extends:
     resourceType: databricks
     environments:
       - dev
-      - uat
+      # - uat
 
     resources:
       - name: databricks
