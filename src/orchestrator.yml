@@ -7,12 +7,11 @@ parameters:
 - name: serviceConnection
   default: ''  
   type: string
-- name: resources
+- name: configurations
   type: object
 - name: environments 
   type: object
-- name: keyVaultName
-  type: string
+
 
 stages:
 - stage: build
