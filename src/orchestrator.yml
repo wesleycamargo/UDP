@@ -58,7 +58,7 @@ stages:
           - ${{ if eq(resource.type, 'databricks') }}:
               - template: .\deploy\databricks-deploy-jobs.yml 
                 parameters:
-                  resourceConfiguration: ${{ configuration }}
+                  resourceConfiguration: ${{ parameters.configuration }}
 
 
   # - ${{ if eq(parameters.resourceType, 'dotnetcore') }}:    
