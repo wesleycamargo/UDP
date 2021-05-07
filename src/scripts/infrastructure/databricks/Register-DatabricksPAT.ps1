@@ -108,9 +108,9 @@ function Register-DatabricksPATIntoKeyVault {
         $keyVaultName,
         $secretName
     )
-    $return = az keyvault secret set --name $secretName --vault-name $keyVaultName --value $pat.token_value   
-    if($return){
-        return $true
+    $return = az keyvault secret set --name $secretName --vault-name $keyVaultName --value $pat.token_value | ConvertFrom-Json
+    if($return.value){
+        return "PAT successfully registered into Key Vault"
     }
 }
 
