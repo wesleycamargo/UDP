@@ -114,7 +114,7 @@ jobs:
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                      -databricksWorkspaceResourceGroup ${{ parameters.resource.infrastructure.databricksWorkspaceResourceGroup }}
+                      -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
         deploy:
           steps:
             - task: DownloadBuildArtifacts@0
