@@ -5,14 +5,18 @@ param (
     [string]$databricksWorkspaceName,
     [string]$databricksWorkspaceResourceGroup,
     
-    [string]$tenant,
-    [string]$spnClientId,
+    # [string]$tenant,
+    # [string]$spnClientId,
     [string]$spnClientSecret,
 
     [string]$keyVaultName,
     [string]$keyVaultPATSecretName
 )
 
+
+function Get-SubscriptionInformation {
+    return az account show | ConvertFrom-Json
+}
 
 function Get-DatabricksWorkspace {
     param (
@@ -35,7 +39,7 @@ function Get-ActiveDirectoryToken {
     )
 
     $resourceId = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
-    
+
     $body = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $body.Add("grant_type", "client_credentials")
     $body.Add("client_id", "$spnClientId")
@@ -77,20 +81,22 @@ function Get-DatabricksPAT {
     param (
         [string]$clusterName,
         [string]$clusterConfigurationFile,
-        [string]$tenant,
-        [string]$spnClientId,
+        # [string]$tenant,
+        # [string]$spnClientId,
         [string]$spnClientSecret,
         [string]$databricksWorkspaceName,
         [string]$databricksWorkspaceResourceGroup
     )
+
+    $subscriptionInfo = Get-SubscriptionInformation
 
     $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
 
     $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
     $databricksResourceId = $databricksWorkspace.id
 
-    $adToken = Get-ActiveDirectoryToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
-    $managementEndpointToken = Get-ManagementEndpointToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+    $adToken = Get-ActiveDirectoryToken -tenant $subscriptionInfo.tenant -spnClientId $subscriptionInfo.id -spnClientSecret $spnClientSecret
+    $managementEndpointToken = Get-ManagementEndpointToken -tenant $subscriptionInfo.tenant -spnClientId $subscriptionInfo.id -spnClientSecret $spnClientSecret
 
     $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $header.Add("Authorization", "Bearer $adToken")
@@ -114,6 +120,6 @@ function Register-DatabricksPATIntoKeyVault {
     }
 }
 
-$pat = Get-DatabricksPAT -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+$pat = Get-DatabricksPAT -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant -spnClientId $spnClientId 
 
 Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
