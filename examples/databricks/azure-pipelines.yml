@@ -34,15 +34,17 @@ extends:
     environments:
       - dev
       # - uat
-
-    resources:
-      - name: databricks2
-        type: databricks
-        databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
-        infrastructure:
-          enabled: true
-          clusters:
-            - name: new-cluster
-              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
-            - name: new-cluster-5
-              clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
+    configurations:
+      keyVaultName: keyvault5zpayvr2rt6ki
+      resources:
+        - name: databricks2
+          type: databricks
+          databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
+          keyVaultPATSecretName: databricksPAT
+          infrastructure:
+            enabled: true
+            clusters:
+              - name: new-cluster
+                clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
+              - name: new-cluster-5
+                clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json

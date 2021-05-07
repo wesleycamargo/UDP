@@ -11,13 +11,15 @@ parameters:
   type: object
 - name: environments 
   type: object
+- name: keyVaultName
+  type: string
 
 stages:
 - stage: build
   dependsOn: []
   jobs:
 
-    - ${{ each resource in parameters.resources }}:
+    - ${{ each resource in parameters.configurations.resources }}:
       - ${{ if eq(resource.type, 'databricks') }}:
           - template: .\build\databricks-build-jobs.yml 
             parameters: 
@@ -53,7 +55,7 @@ stages:
         dependsOn: uat
 
     jobs:
-        - ${{ each resource in parameters.resources }}:
+        - ${{ each resource in parameters.configurations.resources }}:
           - ${{ if eq(resource.type, 'databricks') }}:
               - template: .\deploy\databricks-deploy-jobs.yml 
                 parameters:
