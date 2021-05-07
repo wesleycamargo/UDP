@@ -54,11 +54,11 @@ stages:
         dependsOn: uat
 
     jobs:
-        - ${{ each resource in parameters.configuration }}:
+        - ${{ each resource in parameters.configuration.resources }}:
           - ${{ if eq(resource.type, 'databricks') }}:
               - template: .\deploy\databricks-deploy-jobs.yml 
                 parameters:
-                  resourceConfiguration: ${{ resource }}
+                  resourceConfiguration: ${{ configuration }}
 
 
   # - ${{ if eq(parameters.resourceType, 'dotnetcore') }}:    
