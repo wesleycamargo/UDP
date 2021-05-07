@@ -39,6 +39,7 @@ jobs:
                 csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
                 deploymentMode: 'Incremental'
                 deploymentOutputs: 'ArmOutputs'
+                overrideParameters: '-databricksWorkspaceName databricks5zpayvr2rt6ki'
             
             - powershell: |
                 function Convert-ArmOutputToPsObject {
