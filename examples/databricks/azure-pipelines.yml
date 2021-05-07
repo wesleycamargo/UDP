@@ -34,7 +34,7 @@ extends:
     environments:
       - dev
       # - uat
-    configurations:
+    configuration:
       keyVaultName: keyvault5zpayvr2rt6ki
       resources:
         - name: databricks2
