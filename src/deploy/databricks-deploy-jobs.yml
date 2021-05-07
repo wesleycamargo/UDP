@@ -79,6 +79,23 @@ jobs:
                 Write-Host "output $(ArmOutputs.databricksWorkspaceName)"
                 
 
+            
+            - task: AzureCLI@2
+              displayName: Create Cluster
+              inputs:
+                azureSubscription: $(ServiceConnectionName)
+                scriptLocation: "scriptPath"
+                scriptType: "pscore"
+                scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-DatabricksPAT.ps1'
+                arguments: >
+                  -tenant $(tenant)
+                  -spnClientId $(spnClientId)
+                  -spnClientSecret $(spnClientSecret)
+                  -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
+                  -databricksWorkspaceResourceGroup ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
+                  -keyVaultName keyvault5zpayvr2rt6ki 
+                  -keyVaultPATSecretName databricksPAT
+
             - ${{ each cluster in parameters.resourceConfiguration.infrastructure.clusters }}:
                 - task: AzureCLI@2
                   displayName: Create Cluster
