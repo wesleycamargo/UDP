@@ -6,7 +6,7 @@ param (
     [string]$databricksWorkspaceResourceGroup,
     
     # [string]$tenant,
-    # [string]$spnClientId,
+    [string]$spnClientId,
     [string]$spnClientSecret,
 
     [string]$keyVaultName,
@@ -82,7 +82,7 @@ function Get-DatabricksPAT {
         [string]$clusterName,
         [string]$clusterConfigurationFile,
         # [string]$tenant,
-        # [string]$spnClientId,
+        [string]$spnClientId,
         [string]$spnClientSecret,
         [string]$databricksWorkspaceName,
         [string]$databricksWorkspaceResourceGroup
@@ -95,8 +95,8 @@ function Get-DatabricksPAT {
     $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
     $databricksResourceId = $databricksWorkspace.id
 
-    $adToken = Get-ActiveDirectoryToken -tenant $subscriptionInfo.tenant -spnClientId $subscriptionInfo.id -spnClientSecret $spnClientSecret
-    $managementEndpointToken = Get-ManagementEndpointToken -tenant $subscriptionInfo.tenant -spnClientId $subscriptionInfo.id -spnClientSecret $spnClientSecret
+    $adToken = Get-ActiveDirectoryToken -tenant $subscriptionInfo.tenantId -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+    $managementEndpointToken = Get-ManagementEndpointToken -tenant $subscriptionInfo.tenantId -spnClientId $spnClientId -spnClientSecret $spnClientSecret
 
     $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $header.Add("Authorization", "Bearer $adToken")
@@ -120,6 +120,6 @@ function Register-DatabricksPATIntoKeyVault {
     }
 }
 
-$pat = Get-DatabricksPAT -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant -spnClientId $spnClientId 
+$pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
 Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName

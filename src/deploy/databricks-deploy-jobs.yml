@@ -90,7 +90,6 @@ jobs:
                 scriptType: "pscore"
                 scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-DatabricksPAT.ps1'
                 arguments: >
-                  -tenant $(tenant)
                   -spnClientId $(spnClientId)
                   -spnClientSecret $(spnClientSecret)
                   -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
