@@ -1,6 +1,8 @@
 parameters:
   - name: configuration
     type: object
+  - name: resource
+    type: object
 
 jobs:
   - deployment: 
@@ -97,7 +99,7 @@ jobs:
                   -keyVaultName keyvault5zpayvr2rt6ki 
                   -keyVaultPATSecretName databricksPAT
 
-            - ${{ each cluster in parameters..infrastructure.clusters }}:
+            - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                 - task: AzureCLI@2
                   displayName: Create Cluster
                   inputs:
