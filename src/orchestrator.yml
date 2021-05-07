@@ -7,7 +7,7 @@ parameters:
 - name: serviceConnection
   default: ''  
   type: string
-- name: configurations
+- name: configuration
   type: object
 - name: environments 
   type: object
@@ -18,7 +18,7 @@ stages:
   dependsOn: []
   jobs:
 
-    - ${{ each resource in parameters.configurations.resources }}:
+    - ${{ each resource in parameters.configuration.resources }}:
       - ${{ if eq(resource.type, 'databricks') }}:
           - template: .\build\databricks-build-jobs.yml 
             parameters: 
@@ -54,7 +54,7 @@ stages:
         dependsOn: uat
 
     jobs:
-        - ${{ each resource in parameters.configurations.resources }}:
+        - ${{ each resource in parameters.configuration }}:
           - ${{ if eq(resource.type, 'databricks') }}:
               - template: .\deploy\databricks-deploy-jobs.yml 
                 parameters:

@@ -1,5 +1,5 @@
 parameters:
-  - name: resourceConfiguration
+  - name: configuration
     type: object
 
 jobs:
@@ -33,14 +33,14 @@ jobs:
                 azureResourceManagerConnection: $(serviceConnection)
                 subscriptionId: $(subscriptionId)
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
+                resourceGroupName: ${{ parameters.configuration.resources.databricksWorkspaceResourceGroup }}
                 location: 'North Europe'
                 templateLocation: 'Linked artifact'
                 csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
                 deploymentMode: 'Incremental'
                 deploymentOutputs: 'ArmOutputs'
                 overrideParameters: |
-                  -databricksWorkspaceName ${{ parameters.resourceConfiguration.name }}
+                  -databricksWorkspaceName ${{ parameters.configuration.resources.name }}
             
             - powershell: |
                 function Convert-ArmOutputToPsObject {
@@ -93,11 +93,11 @@ jobs:
                   -spnClientId $(spnClientId)
                   -spnClientSecret $(spnClientSecret)
                   -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                  -databricksWorkspaceResourceGroup ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
+                  -databricksWorkspaceResourceGroup ${{ parameters.configuration.resources.databricksWorkspaceResourceGroup }}
                   -keyVaultName keyvault5zpayvr2rt6ki 
                   -keyVaultPATSecretName databricksPAT
 
-            - ${{ each cluster in parameters.resourceConfiguration.infrastructure.clusters }}:
+            - ${{ each cluster in parameters..infrastructure.clusters }}:
                 - task: AzureCLI@2
                   displayName: Create Cluster
                   inputs:
@@ -112,7 +112,7 @@ jobs:
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                      -databricksWorkspaceResourceGroup ${{ parameters.resourceConfiguration.databricksWorkspaceResourceGroup }}
+                      -databricksWorkspaceResourceGroup ${{ parameters..databricksWorkspaceResourceGroup }}
         deploy:
           steps:
             - task: DownloadBuildArtifacts@0
