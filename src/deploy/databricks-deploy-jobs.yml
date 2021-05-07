@@ -35,14 +35,14 @@ jobs:
                 azureResourceManagerConnection: $(serviceConnection)
                 subscriptionId: $(subscriptionId)
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: ${{ parameters.configuration.resources.databricksWorkspaceResourceGroup }}
+                resourceGroupName: ${{ parameters.resource.databricksWorkspaceResourceGroup }}
                 location: 'North Europe'
                 templateLocation: 'Linked artifact'
                 csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
                 deploymentMode: 'Incremental'
                 deploymentOutputs: 'ArmOutputs'
                 overrideParameters: |
-                  -databricksWorkspaceName ${{ parameters.configuration.resources.name }}
+                  -databricksWorkspaceName ${{ parameters.resource.name }}
             
             - powershell: |
                 function Convert-ArmOutputToPsObject {
@@ -95,9 +95,9 @@ jobs:
                   -spnClientId $(spnClientId)
                   -spnClientSecret $(spnClientSecret)
                   -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                  -databricksWorkspaceResourceGroup ${{ parameters.configuration.resources.databricksWorkspaceResourceGroup }}
-                  -keyVaultName keyvault5zpayvr2rt6ki 
-                  -keyVaultPATSecretName databricksPAT
+                  -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                  -keyVaultName ${{ parameters.configuration.keyVaultName }} 
+                  -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
 
             - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                 - task: AzureCLI@2
