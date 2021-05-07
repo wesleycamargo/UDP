@@ -39,7 +39,8 @@ jobs:
                 csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
                 deploymentMode: 'Incremental'
                 deploymentOutputs: 'ArmOutputs'
-                overrideParameters: '-databricksWorkspaceName databricks-wes'
+                overrideParameters: |
+                  -databricksWorkspaceName ${{ parameters.resourceConfiguration.name }}
             
             - powershell: |
                 function Convert-ArmOutputToPsObject {
@@ -120,7 +121,7 @@ jobs:
               inputs:
                 buildType: 'current'
                 downloadType: 'single'
-                artifactName: 'databricks'
+                artifactName: 'infrastructure'
                 downloadPath: '$(System.ArtifactsDirectory)'
             - task: UsePythonVersion@0
               displayName: Configuring Python Version

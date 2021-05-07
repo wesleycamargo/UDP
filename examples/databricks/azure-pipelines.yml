@@ -36,7 +36,7 @@ extends:
       # - uat
 
     resources:
-      - name: databricks
+      - name: databricks2
         type: databricks
         databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
         infrastructure:
