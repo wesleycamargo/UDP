@@ -40,7 +40,7 @@ extends:
         - name: databricks-udp
           type: databricks
           databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
-          keyVaultPATSecretName: databricksPAT
+          keyVaultPATSecretName: databricksAccessToken
           infrastructure:
             enabled: true
             clusters:
