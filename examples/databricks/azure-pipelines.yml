@@ -37,7 +37,7 @@ extends:
     configuration:
       keyVaultName: keyvault5zpayvr2rt6ki
       resources:
-        - name: databricks2
+        - name: databricks-udp
           type: databricks
           databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
           keyVaultPATSecretName: databricksPAT
