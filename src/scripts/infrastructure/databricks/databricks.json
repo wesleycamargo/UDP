@@ -41,6 +41,10 @@
         "databricksWorkspaceName": {
             "type": "string",
             "value": "[parameters('databricksWorkspaceName')]"
+        },
+        "workspace": {
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName')))]"
         }
     }
 }

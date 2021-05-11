@@ -45,6 +45,9 @@ jobs:
                   -databricksWorkspaceName ${{ parameters.resource.name }}
             
             - powershell: |
+                Write-Host "output $($armOutputObj)"
+
+            - powershell: |
                 function Convert-ArmOutputToPsObject {
                   param (
                     [Parameter(Mandatory=$true)]
@@ -130,3 +133,15 @@ jobs:
                 versionSpec: '3.x'
                 addToPath: true
                 architecture: 'x64'
+            - task: configuredatabricks@0
+              displayName: Configuring Databricks $(ArmOutputs.databricksWorkspaceName)
+              inputs:
+                url: '$(DatabricksWorkspaceURL)'
+                token: '$(DatabricksPAT)'
+            - task: databricksDeployScripts@0
+              inputs:
+                authMethod: 'bearer'
+                bearerToken: '$(DatabricksPAT)'
+                region: 'westeurope'
+                localPath: '$(System.ArtifactsDirectory)/${{ parameters.artifactName }}/${{ parameters.deploymentConfig.name }}/'
+                databricksPath: '${{ parameters.deploymentConfig.workspaceFolder }}'
