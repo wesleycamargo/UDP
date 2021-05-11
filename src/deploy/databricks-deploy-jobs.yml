@@ -45,7 +45,7 @@ jobs:
                   -databricksWorkspaceName ${{ parameters.resource.name }}
             
             - powershell: |
-                Write-Host "output $($armOutputObj)"
+                Write-Host "output $($armOutputObj.workspace)"
 
             - powershell: |
                 function Convert-ArmOutputToPsObject {
