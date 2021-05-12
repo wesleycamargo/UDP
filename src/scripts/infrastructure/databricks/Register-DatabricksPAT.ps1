@@ -132,11 +132,11 @@ function Register-AppConfiguration {
     $databricksResourceId = $databricksWorkspace.id
 
     
-    $return = az appconfig kv set -n $appconfigName --key databricksWorkspaceURL --label dev --value $databricksWorkspaceURL | ConvertFrom-Json
+    $return = az appconfig kv set -n $appconfigName --key databricksWorkspaceURL --label dev --value $databricksWorkspaceURL -y | ConvertFrom-Json
     if($return.value){
         return "databricksWorkspaceURL successfully registered into AppConfiguration"
     }
-    $return = az appconfig kv set -n $appconfigName --key databricksResourceId --label dev --value $databricksResourceId | ConvertFrom-Json
+    $return = az appconfig kv set -n $appconfigName --key databricksResourceId --label dev --value $databricksResourceId -y | ConvertFrom-Json
     if($return.value){
         return "databricksResourceId successfully registered into AppConfiguration"
     }
