@@ -120,6 +120,33 @@ function Register-DatabricksPATIntoKeyVault {
     }
 }
 
+function Register-AppConfiguration {
+    param (
+        $appconfigName,
+        $label = "dev"
+    )
+
+    $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+
+    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
+    $databricksResourceId = $databricksWorkspace.id
+
+    
+    $return = az appconfig kv set -n $appconfigName --key databricksWorkspaceURL --label dev --value $databricksWorkspaceURL | ConvertFrom-Json
+    if($return.value){
+        return "databricksWorkspaceURL successfully registered into AppConfiguration"
+    }
+    $return = az appconfig kv set -n $appconfigName --key databricksResourceId --label dev --value $databricksResourceId | ConvertFrom-Json
+    if($return.value){
+        return "databricksResourceId successfully registered into AppConfiguration"
+    }
+
+}
+
+
+
 $pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
 Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
+
+Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki
