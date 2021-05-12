@@ -145,7 +145,7 @@ function Register-AppConfiguration {
         Write-Host "databricksResourceId successfully registered into AppConfiguration"
     }
     
-    az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier "https://keyvault5zpayvr2rt6ki.vault.azure.net/secrets/databricksAccessToken/7e85d961c0a949de8a16244a51ba9bba"
+    az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier "https://keyvault5zpayvr2rt6ki.vault.azure.net/secrets/databricksAccessToken/7e85d961c0a949de8a16244a51ba9bba" -y
 }
 
 
