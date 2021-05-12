@@ -115,6 +115,8 @@ function Register-DatabricksPATIntoKeyVault {
         $secretName
     )
     $return = az keyvault secret set --name $secretName --vault-name $keyVaultName --value $pat.token_value | ConvertFrom-Json
+    Write-Host $return
+    
     if($return.value){
         return "PAT successfully registered into Key Vault"
     }
@@ -123,7 +125,8 @@ function Register-DatabricksPATIntoKeyVault {
 function Register-AppConfiguration {
     param (
         $appconfigName,
-        $label = "dev"
+        $label = "dev",
+        $keyVaultPATSecretName
     )
 
     $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
@@ -134,13 +137,15 @@ function Register-AppConfiguration {
     
     $return = az appconfig kv set -n $appconfigName --key databricksWorkspaceURL --label dev --value $databricksWorkspaceURL -y | ConvertFrom-Json
     if($return.value){
-        return "databricksWorkspaceURL successfully registered into AppConfiguration"
+        Write-Host "databricksWorkspaceURL successfully registered into AppConfiguration"
     }
+    
     $return = az appconfig kv set -n $appconfigName --key databricksResourceId --label dev --value $databricksResourceId -y | ConvertFrom-Json
     if($return.value){
-        return "databricksResourceId successfully registered into AppConfiguration"
+        Write-Host "databricksResourceId successfully registered into AppConfiguration"
     }
-
+    
+    az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier "https://keyvault5zpayvr2rt6ki.vault.azure.net/secrets/databricksAccessToken/7e85d961c0a949de8a16244a51ba9bba"
 }
 
 
@@ -149,4 +154,4 @@ $pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSe
 
 Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
 
-Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki
+Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName
