@@ -39,46 +39,6 @@ jobs:
             #       }
             #     resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
 
-            - task: Pester@9
-              inputs:
-                # Required Arguments
-                scriptFolder: | 
-                  @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
-                    Parameters=@{
-                      spnClientSecret='$(spnClientSecret)';
-                      spnClientId='$(spnClientId)';
-                      tenant='$(tenant)'
-                      databricksWorkspaceName='${{ parameters.resource.name }}';
-                      databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
-                      keyVaultName='${{ parameters.configuration.keyVaultName }}';
-                      keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
-                      customModulesDirectory='$(System.ArtifactsDirectory)/infrastructure/modules'
-                    }
-                  }
-
-                resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
-                additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'
-                CodeCoverageOutputFile: '$(System.ArtifactsDirectory)\CodeCoverage-Pester.xml'
-
-            - task: PublishTestResults@2
-              inputs:
-                # Make sure to use the 'NUnit' test runner
-                testRunner: "NUnit" # !!!
-                # Make sure the file name matches the file name you specified in the Invoke-Pester.ps1 script.
-                # A possibility is to add this as a parameter to the script
-                testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
-                testRunTitle: "PS_Win2016_Unit"
-                # Make the whole pipeline fail if a test is failed
-                failTaskOnFailedTests: true
-              displayName: "Publish Unit Test Results"
-              condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
-
-            - task: PublishCodeCoverageResults@1
-              inputs:
-                summaryFileLocation: "$(System.ArtifactsDirectory)/CodeCoverage-Pester.xml"
-                failIfCoverageEmpty: false
-              displayName: "Publish Unit Test Code Coverage"
-              condition: and(in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed'), eq(variables['System.PullRequest.IsFork'], false))
 
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
@@ -137,9 +97,6 @@ jobs:
                 Write-Host "output $(ArmOutputs.databricksWorkspaceName)"
                 Write-Host "output $(ArmOutputs.workspaceUrl)"
                 
-                
-
-            
             - task: AzureCLI@2
               displayName: Register Databricks PAT
               inputs:
@@ -176,14 +133,43 @@ jobs:
               inputs:
                 # Required Arguments
                 scriptFolder: | 
-                  @{Path='$(System.ArtifactsDirectory)/tests'; 
-                  Parameters=@{spnClientSecret='$(spnClientSecret)';
-                    spnClientId='$(spnClientId)';
-                    databricksWorkspaceName='${{ parameters.resource.name }}';
-                    databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
-                    keyVaultName='${{ parameters.configuration.keyVaultName }}';
-                    keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'}}"
-                resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
+                  @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
+                    Parameters=@{
+                      spnClientSecret='$(spnClientSecret)';
+                      spnClientId='$(spnClientId)';
+                      tenant='$(tenant)'
+                      databricksWorkspaceName='${{ parameters.resource.name }}';
+                      databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
+                      keyVaultName='${{ parameters.configuration.keyVaultName }}';
+                      keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
+                      customModulesDirectory='$(System.ArtifactsDirectory)/infrastructure/modules'
+                    }
+                  }
+
+                resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
+                additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'
+                CodeCoverageOutputFile: '$(System.ArtifactsDirectory)\CodeCoverage-Pester.xml'
+
+            - task: PublishTestResults@2
+              inputs:
+                # Make sure to use the 'NUnit' test runner
+                testRunner: "NUnit" # !!!
+                # Make sure the file name matches the file name you specified in the Invoke-Pester.ps1 script.
+                # A possibility is to add this as a parameter to the script
+                testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
+                testRunTitle: "PS_Win2016_Unit"
+                # Make the whole pipeline fail if a test is failed
+                failTaskOnFailedTests: true
+              displayName: "Publish Unit Test Results"
+              condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
+
+            - task: PublishCodeCoverageResults@1
+              inputs:
+                summaryFileLocation: "$(System.ArtifactsDirectory)/CodeCoverage-Pester.xml"
+                failIfCoverageEmpty: false
+              displayName: "Publish Unit Test Code Coverage"
+              condition: and(in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed'), eq(variables['System.PullRequest.IsFork'], false))
+
                 
         deploy:
           steps:
