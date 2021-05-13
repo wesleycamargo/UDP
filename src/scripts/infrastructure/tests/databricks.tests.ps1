@@ -23,12 +23,15 @@ param(
 
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
-  $keyVaultPATSecretName
+  $keyVaultPATSecretName,
+  $customModulesDirectory
 )
     
 Describe 'Register Information' {
         
     $module = "UDP.Deployment"
+
+    $module = Join-Path -Path $customModulesDirectory -ChildPath "UDP.Deployment"
 
     Import-Module $module -Force
 

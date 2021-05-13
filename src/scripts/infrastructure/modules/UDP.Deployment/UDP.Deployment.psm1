@@ -1,19 +1,3 @@
-
-[CmdletBinding()]
-param (
-    [Parameter()]
-    [string]$databricksWorkspaceName,
-    [string]$databricksWorkspaceResourceGroup,
-    
-    # [string]$tenant,
-    [string]$spnClientId,
-    [string]$spnClientSecret,
-
-    [string]$keyVaultName,
-    [string]$keyVaultPATSecretName
-)
-
-
 function Get-SubscriptionInformation {
     return az account show | ConvertFrom-Json
 }
