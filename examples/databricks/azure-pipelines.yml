@@ -37,12 +37,12 @@ extends:
     configuration:
       keyVaultName: keyvault5zpayvr2rt6ki
       resources:
-        - name: databricks-udp
+        - name: databricks-udp2
           type: databricks
           databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
           keyVaultPATSecretName: databricksAccessToken
           infrastructure:
-            enabled: false
+            enabled: true
             clusters:
               - name: new-cluster
                 clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
