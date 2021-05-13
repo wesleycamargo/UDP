@@ -18,6 +18,7 @@ pool:
 variables:
   - name: serviceConnection
     value: 'MVP Sponsorship'
+  - group: databricksdeploy
   # - name: ServiceConnectionName
   # - name: spnClientId
   # - name: spnClientSecret

@@ -142,8 +142,6 @@ jobs:
                       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')           
                 
         deploy:
-          variables:
-            - group: databricksdeploy
           steps:
             - task: DownloadBuildArtifacts@0
               displayName: Downloading artifacts databricks
