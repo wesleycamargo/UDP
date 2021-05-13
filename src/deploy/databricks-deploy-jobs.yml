@@ -4,6 +4,9 @@ parameters:
   - name: resource
     type: object
 
+variables:
+- group: databricksdeploy
+
 jobs:
   - deployment: 
     displayName: Azure Databricks Deployment
