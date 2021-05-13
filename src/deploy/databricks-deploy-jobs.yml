@@ -26,12 +26,15 @@ jobs:
                 artifactName: 'infrastructure'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
+            - powershell: |
+                Get-childitem $(System.ArtifactsDirectory) -Recurse
+
             - task: Pester@9
               inputs:
                 # Required Arguments
                 scriptFolder: | 
                   @{
-                    Path='$(System.ArtifactsDirectory)/tests/pester.tests.ps1'; 
+                    Path='$(System.ArtifactsDirectory)/infrastructure/tests/pester.tests.ps1'; 
                     Parameters=@{test='test value'}
                   }
                 resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
