@@ -21,15 +21,12 @@ param(
 
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
-  $keyVaultPATSecretName 
+  $keyVaultPATSecretName
 )
     
 Describe 'Register Information' {
         
-    $module = "C:\lx\repo\wes\UDP\src\scripts\infrastructure\modules\UDP.Deployment\UDP.Deployment.psm1"
 
-    Import-Module $module -Force
-        
     It 'Should return PAT' {
         
         $pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 

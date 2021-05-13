@@ -11,13 +11,20 @@ param(
   $databricksWorkspaceName,
   $databricksWorkspaceResourceGroup,
   $keyVaultName,
-  $keyVaultPATSecretName 
-
+  $keyVaultPATSecretName,
+  $powershellModulesDirectory
 )
 
 # Invoke-Pester -Script @{ Path =  '.\databricks.tests.ps1' } #; Parameters = @{spnClientId  = $spnClientId; spnClientSecret = $spnClientSecret} }
 # Invoke-Pester -Script @{ Path =  '.\databricks.tests.ps1'; Parameters = @{spnClientId  = $spnClientId; spnClientSecret = $spnClientSecret} }
 # Invoke-Pester ".\databricks.tests.ps1"
+
+
+
+$module = "$powershellModulesDirectory\UDP.Deployment\UDP.Deployment.psm1"
+
+Import-Module $module -Force
+    
 
 $container = New-PesterContainer -Path '.\databricks.tests.ps1' -Data @{ spnClientId = $spnClientId; `
                                                                          spnClientSecret =  $spnClientSecret; `

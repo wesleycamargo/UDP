@@ -51,6 +51,7 @@ jobs:
                     keyVaultName='${{ parameters.configuration.keyVaultName }}';
                     keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'}}
                 resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
+                additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'
 
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
