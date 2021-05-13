@@ -159,6 +159,19 @@ jobs:
                 versionSpec: '3.x'
                 addToPath: true
                 architecture: 'x64'
+
+            - task: AzureAppConfiguration@3
+              inputs:
+                azureSubscription: 'MVP Sponsorship'
+                ConfigstoreName: 'appconfig5zpayvr2rt6ki'
+                KeyFilter: '*'
+                Label: 'dev'
+
+            - powershell: |
+                Write-Host $(databricksUrl)
+                Write-Host $(databricksWorkspaceURL)
+                Write-Host $(databricksAccessToken)
+
             # - task: configuredatabricks@0
             #   displayName: Configuring Databricks $(ArmOutputs.databricksWorkspaceName)
             #   inputs:
