@@ -26,19 +26,6 @@ jobs:
                 artifactName: 'infrastructure'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
-            - powershell: |
-                Get-childitem $(System.ArtifactsDirectory) -Recurse
-
-            # - task: Pester@9
-            #   inputs:
-            #     # Required Arguments
-            #     scriptFolder: | 
-            #       @{
-            #         Path='$(System.ArtifactsDirectory)/infrastructure/tests/pester.tests.ps1'; 
-            #         Parameters=@{test='test value'}
-            #       }
-            #     resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
-
 
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
@@ -54,9 +41,6 @@ jobs:
                 deploymentOutputs: 'ArmOutputs'
                 overrideParameters: |
                   -databricksWorkspaceName ${{ parameters.resource.name }}
-            
-            - powershell: |
-                Write-Host "output $($armOutputObj.workspace)"
 
             - powershell: |
                 function Convert-ArmOutputToPsObject {
@@ -93,10 +77,6 @@ jobs:
                 Convert-ArmOutputToPsObject -ArmOutputString '$(ArmOutputs)' -Verbose
               displayName: "Parsing outputs from ARM deployment to pipeline variables"
               
-            - powershell: |
-                Write-Host "output $(ArmOutputs.databricksWorkspaceName)"
-                Write-Host "output $(ArmOutputs.workspaceUrl)"
-                
             - task: AzureCLI@2
               displayName: Register Databricks PAT
               inputs:
@@ -131,7 +111,6 @@ jobs:
 
             - task: Pester@9
               inputs:
-                # Required Arguments
                 scriptFolder: | 
                   @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
                     Parameters=@{
@@ -152,13 +131,9 @@ jobs:
 
             - task: PublishTestResults@2
               inputs:
-                # Make sure to use the 'NUnit' test runner
-                testRunner: "NUnit" # !!!
-                # Make sure the file name matches the file name you specified in the Invoke-Pester.ps1 script.
-                # A possibility is to add this as a parameter to the script
+                testRunner: "NUnit"
                 testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
                 testRunTitle: "PS_Win2016_Unit"
-                # Make the whole pipeline fail if a test is failed
                 failTaskOnFailedTests: true
               displayName: "Publish Unit Test Results"
               condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
@@ -169,7 +144,6 @@ jobs:
                 failIfCoverageEmpty: false
               displayName: "Publish Unit Test Code Coverage"
               condition: and(in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed'), eq(variables['System.PullRequest.IsFork'], false))
-
                 
         deploy:
           steps:
