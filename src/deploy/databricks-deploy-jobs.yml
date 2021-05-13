@@ -34,7 +34,7 @@ jobs:
                 # Required Arguments
                 scriptFolder: | 
                   @{
-                    Path='$(System.ArtifactsDirectory)/infrastructure/databricks/tests/pester.tests.ps1'; 
+                    Path='$(System.ArtifactsDirectory)/infrastructure/tests/pester.tests.ps1'; 
                     Parameters=@{test='test value'}
                   }
                 resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
@@ -43,7 +43,7 @@ jobs:
               inputs:
                 # Required Arguments
                 scriptFolder: | 
-                  @{Path='$(System.ArtifactsDirectory)/tests/databricks.tests.ps1'; 
+                  @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
                   Parameters=@{spnClientSecret='$(spnClientSecret)';
                     spnClientId='$(spnClientId)';
                     databricksWorkspaceName='${{ parameters.resource.name }}';
