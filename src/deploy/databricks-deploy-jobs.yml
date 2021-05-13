@@ -170,11 +170,11 @@ jobs:
               displayName: 'Configure Databricks CLI'
               inputs:
                 url: 'https://adb-4201552957767638.18.azuredatabricks.net'
-                token: $(dbtoken)
+                token: $(databricksAccessToken)
 
 
             - powershell: |
-                Write-Host $(dbtoken)
+                Write-Host $(databricksAccessToken)
                 cat C:\Users\VssAdministrator\.databrickscfg
                 databricks workspace list --profile AZDO
                 databricks workspace import_dir -o --profile AZDO $(System.ArtifactsDirectory)/application/databricks/ /Shared/deployments
