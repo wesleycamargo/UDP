@@ -10,133 +10,134 @@ jobs:
     environment: develop
     strategy:
       runOnce:
-        preDeploy:
-          steps:
-            - task: DownloadBuildArtifacts@0
-              inputs:
-                buildType: 'current'
-                downloadType: 'single'
-                artifactName: 'application'
-                downloadPath: '$(System.ArtifactsDirectory)'
+        - ${{ if eq( parameters.resource.infrastructure.enabled, true) }}:
+            preDeploy:
+              steps:
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    buildType: 'current'
+                    downloadType: 'single'
+                    artifactName: 'application'
+                    downloadPath: '$(System.ArtifactsDirectory)'
 
-            - task: DownloadBuildArtifacts@0
-              inputs:
-                buildType: 'current'
-                downloadType: 'single'
-                artifactName: 'infrastructure'
-                downloadPath: '$(System.ArtifactsDirectory)'
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    buildType: 'current'
+                    downloadType: 'single'
+                    artifactName: 'infrastructure'
+                    downloadPath: '$(System.ArtifactsDirectory)'
 
-            - task: AzureResourceManagerTemplateDeployment@3
-              inputs:
-                deploymentScope: 'Resource Group'
-                azureResourceManagerConnection: $(serviceConnection)
-                subscriptionId: $(subscriptionId)
-                action: 'Create Or Update Resource Group'
-                resourceGroupName: ${{ parameters.resource.databricksWorkspaceResourceGroup }}
-                location: 'North Europe'
-                templateLocation: 'Linked artifact'
-                csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
-                deploymentMode: 'Incremental'
-                deploymentOutputs: 'ArmOutputs'
-                overrideParameters: |
-                  -databricksWorkspaceName ${{ parameters.resource.name }}
+                - task: AzureResourceManagerTemplateDeployment@3
+                  inputs:
+                    deploymentScope: 'Resource Group'
+                    azureResourceManagerConnection: $(serviceConnection)
+                    subscriptionId: $(subscriptionId)
+                    action: 'Create Or Update Resource Group'
+                    resourceGroupName: ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                    location: 'North Europe'
+                    templateLocation: 'Linked artifact'
+                    csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
+                    deploymentMode: 'Incremental'
+                    deploymentOutputs: 'ArmOutputs'
+                    overrideParameters: |
+                      -databricksWorkspaceName ${{ parameters.resource.name }}
 
-            - powershell: |
-                function Convert-ArmOutputToPsObject {
-                  param (
-                    [Parameter(Mandatory=$true)]
-                    [string]
-                    $ArmOutputString
-                  )
+                - powershell: |
+                    function Convert-ArmOutputToPsObject {
+                      param (
+                        [Parameter(Mandatory=$true)]
+                        [string]
+                        $ArmOutputString
+                      )
 
-                  if ($PSBoundParameters['Verbose']) {
-                    Write-Host "Arm output json is:"
-                    Write-Host $ArmOutputString
-                  }
-
-                  $armOutputObj = $ArmOutputString | ConvertFrom-Json
-
-                  $armOutputObj.PSObject.Properties | ForEach-Object {
-                      $type = ($_.value.type).ToLower()
-                      $keyname = "ArmOutputs.$($_.name)"
-                      $value = $_.value.value
-
-                      if ($type -eq "securestring") {
-                          Write-Host "##vso[task.setvariable variable=$keyname;issecret=true]$value"
-                          Write-Host "Added Azure DevOps secret variable '$keyname' ('$type')"
-                      } elseif ($type -eq "string") {
-                          Write-Host "##vso[task.setvariable variable=$keyname]$value"
-                          Write-Host "Added Azure DevOps variable '$keyname' ('$type') with value '$value'"
-                      } else {
-                          Throw "Type '$type' is not supported for '$keyname'"
+                      if ($PSBoundParameters['Verbose']) {
+                        Write-Host "Arm output json is:"
+                        Write-Host $ArmOutputString
                       }
-                  }
-                }
 
-                Convert-ArmOutputToPsObject -ArmOutputString '$(ArmOutputs)' -Verbose
-              displayName: "Parsing outputs from ARM deployment to pipeline variables"
-              
-            - task: AzureCLI@2
-              displayName: Register Databricks PAT
-              inputs:
-                azureSubscription: $(ServiceConnectionName)
-                scriptLocation: "scriptPath"
-                scriptType: "pscore"
-                scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-DatabricksPAT.ps1'
-                arguments: >
-                  -spnClientId $(spnClientId)
-                  -spnClientSecret $(spnClientSecret)
-                  -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                  -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
-                  -keyVaultName ${{ parameters.configuration.keyVaultName }} 
-                  -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
+                      $armOutputObj = $ArmOutputString | ConvertFrom-Json
 
-            - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
+                      $armOutputObj.PSObject.Properties | ForEach-Object {
+                          $type = ($_.value.type).ToLower()
+                          $keyname = "ArmOutputs.$($_.name)"
+                          $value = $_.value.value
+
+                          if ($type -eq "securestring") {
+                              Write-Host "##vso[task.setvariable variable=$keyname;issecret=true]$value"
+                              Write-Host "Added Azure DevOps secret variable '$keyname' ('$type')"
+                          } elseif ($type -eq "string") {
+                              Write-Host "##vso[task.setvariable variable=$keyname]$value"
+                              Write-Host "Added Azure DevOps variable '$keyname' ('$type') with value '$value'"
+                          } else {
+                              Throw "Type '$type' is not supported for '$keyname'"
+                          }
+                      }
+                    }
+
+                    Convert-ArmOutputToPsObject -ArmOutputString '$(ArmOutputs)' -Verbose
+                  displayName: "Parsing outputs from ARM deployment to pipeline variables"
+                  
                 - task: AzureCLI@2
-                  displayName: Create Cluster
+                  displayName: Register Databricks PAT
                   inputs:
                     azureSubscription: $(ServiceConnectionName)
                     scriptLocation: "scriptPath"
                     scriptType: "pscore"
-                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\New-DatabricksCluster.ps1'
+                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-DatabricksPAT.ps1'
                     arguments: >
-                      -clusterName ${{ cluster.name }}
-                      -clusterConfigurationFile ${{ cluster.clusterConfigurationFile }}
-                      -tenant $(tenant)
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
                       -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
-            
-            - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
-                - task: Pester@9
-                  displayName: Infrastructure tests
-                  inputs:
-                    scriptFolder: | 
-                      @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
-                        Parameters=@{
-                          spnClientSecret='$(spnClientSecret)';
-                          spnClientId='$(spnClientId)';
-                          tenant='$(tenant)'
-                          databricksWorkspaceName='${{ parameters.resource.name }}';
-                          databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
-                          keyVaultName='${{ parameters.configuration.keyVaultName }}';
-                          keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
-                          customModulesDirectory='$(System.ArtifactsDirectory)/infrastructure/modules'
-                        }
-                      }
+                      -keyVaultName ${{ parameters.configuration.keyVaultName }} 
+                      -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
 
-                    resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
-                    additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'                
+                - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
+                    - task: AzureCLI@2
+                      displayName: Create Cluster
+                      inputs:
+                        azureSubscription: $(ServiceConnectionName)
+                        scriptLocation: "scriptPath"
+                        scriptType: "pscore"
+                        scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\New-DatabricksCluster.ps1'
+                        arguments: >
+                          -clusterName ${{ cluster.name }}
+                          -clusterConfigurationFile ${{ cluster.clusterConfigurationFile }}
+                          -tenant $(tenant)
+                          -spnClientId $(spnClientId)
+                          -spnClientSecret $(spnClientSecret)
+                          -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
+                          -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                
+                - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
+                    - task: Pester@9
+                      displayName: Infrastructure tests
+                      inputs:
+                        scriptFolder: | 
+                          @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
+                            Parameters=@{
+                              spnClientSecret='$(spnClientSecret)';
+                              spnClientId='$(spnClientId)';
+                              tenant='$(tenant)'
+                              databricksWorkspaceName='${{ parameters.resource.name }}';
+                              databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
+                              keyVaultName='${{ parameters.configuration.keyVaultName }}';
+                              keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
+                              customModulesDirectory='$(System.ArtifactsDirectory)/infrastructure/modules'
+                            }
+                          }
 
-                - task: PublishTestResults@2                  
-                  inputs:
-                    testRunner: "NUnit"
-                    testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
-                    testRunTitle: "PS_Win2016_Unit"
-                    failTaskOnFailedTests: true
-                  displayName: "Publish Unit Test Results"
-                  condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')           
+                        resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
+                        additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'                
+
+                    - task: PublishTestResults@2                  
+                      inputs:
+                        testRunner: "NUnit"
+                        testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
+                        testRunTitle: "PS_Win2016_Unit"
+                        failTaskOnFailedTests: true
+                      displayName: "Publish Unit Test Results"
+                      condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')           
                 
         deploy:
           steps:
