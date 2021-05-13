@@ -175,6 +175,7 @@ jobs:
                 Write-Host $(dbtoken)
                 cat C:\Users\VssAdministrator\.databrickscfg
                 databricks workspace list --profile AZDO
+                databricks workspace import_dir -o --profile AZDO $(System.ArtifactsDirectory)/application/databricks/ /Shared/deployments
 
             # - task: deploynotebooks@0
             #   displayName: 'Deploy Notebooks to Workspace'
