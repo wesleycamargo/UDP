@@ -127,7 +127,10 @@ function Register-AppConfiguration {
     param (
         $appconfigName,
         $label = "dev",
-        $keyVaultPATSecretName
+        $keyVaultPATSecretName,
+        $keyVaultPATSecretValue,
+        [string]$databricksWorkspaceName,
+        [string]$databricksWorkspaceResourceGroup
     )
 
     $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
@@ -146,13 +149,13 @@ function Register-AppConfiguration {
         Write-Host "databricksResourceId successfully registered into AppConfiguration"
     }
     
-    az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier "https://keyvault5zpayvr2rt6ki.vault.azure.net/secrets/databricksAccessToken/7e85d961c0a949de8a16244a51ba9bba" -y
+    az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier $keyVaultPATSecretValue -y
 }
 
 
 
-$pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
+# $pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
-Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
+# Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
 
-Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName
+# Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName
