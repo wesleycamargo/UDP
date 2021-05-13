@@ -48,4 +48,4 @@ extends:
                 clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
           application:
             enabled: true
-            workspaceDirectory: /
+            workspaceDirectory: /deployments/
