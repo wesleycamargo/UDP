@@ -34,8 +34,10 @@ param(
 
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
+  $appConfigName,
+  [Parameter(Mandatory)]
+  [ValidateNotNullOrEmpty()]
   $keyVaultName,
-
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
   $keyVaultPATSecretName,
@@ -59,4 +61,4 @@ $secret -match $regex
 
 $secretId = $Matches[1]
 
-Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+Register-AppConfiguration -appconfigName $appConfigName -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup

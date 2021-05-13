@@ -85,7 +85,7 @@ jobs:
                     azureSubscription: $(ServiceConnectionName)
                     scriptLocation: "scriptPath"
                     scriptType: "pscore"
-                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-DatabricksPAT.ps1'
+                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-AppConfig.ps1'
                     arguments: >
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
@@ -95,6 +95,7 @@ jobs:
                       -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
                       -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
                       -tenant '$(tenant)'
+                      -appConfigName ${{ parameters.configuration.appConfigName }} 
 
                 - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                     - task: AzureCLI@2

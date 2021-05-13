@@ -37,6 +37,7 @@ extends:
       # - uat
     configuration:
       keyVaultName: keyvault5zpayvr2rt6ki
+      appConfigName: appconfig5zpayvr2rt6ki
       resources:
         - name: databricks-udp2
           type: databricks
