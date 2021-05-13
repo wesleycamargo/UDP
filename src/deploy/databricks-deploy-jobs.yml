@@ -56,8 +56,28 @@ jobs:
                     }
                   }
 
-                resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
+                resultsFile: '$(System.ArtifactsDirectory)\TestResults.Pester.xml'
                 additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'
+
+            - task: PublishTestResults@2
+              inputs:
+                # Make sure to use the 'NUnit' test runner
+                testRunner: "NUnit" # !!!
+                # Make sure the file name matches the file name you specified in the Invoke-Pester.ps1 script.
+                # A possibility is to add this as a parameter to the script
+                testResultsFiles: "$(System.ArtifactsDirectory)/TestResults.Pester.xml"
+                testRunTitle: "PS_Win2016_Unit"
+                # Make the whole pipeline fail if a test is failed
+                failTaskOnFailedTests: true
+              displayName: "Publish Unit Test Results"
+              condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
+
+            - task: PublishCodeCoverageResults@1
+              inputs:
+                summaryFileLocation: "**/CodeCoverage.xml"
+                failIfCoverageEmpty: false
+              displayName: "Publish Unit Test Code Coverage"
+              condition: and(in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed'), eq(variables['System.PullRequest.IsFork'], false))
 
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:

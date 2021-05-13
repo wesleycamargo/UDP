@@ -9,7 +9,7 @@ function Get-DatabricksWorkspace {
     )
     
     # az extension add -n databricks -y 
-    az config set extension.use_dynamic_install=yes_without_prompt -o none
+    az config set extension.use_dynamic_install=yes_without_prompt --only-show-errors
     return az databricks workspace show -n $databricksWorkspaceName -g $databricksWorkspaceResourceGroup -o json | ConvertFrom-Json
 }
 
