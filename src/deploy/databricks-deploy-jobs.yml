@@ -10,7 +10,7 @@ jobs:
     environment: develop
     strategy:
       runOnce:
-        - ${{ if eq( parameters.resource.infrastructure.enabled, true) }}:
+        ${{ if eq( parameters.resource.infrastructure.enabled, true) }}:
             preDeploy:
               steps:
                 - task: DownloadBuildArtifacts@0
