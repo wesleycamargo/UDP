@@ -56,8 +56,9 @@ jobs:
                     }
                   }
 
-                resultsFile: '$(System.ArtifactsDirectory)\TestResults.Pester.xml'
+                resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
                 additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'
+                CodeCoverageOutputFile: '$(System.ArtifactsDirectory)\CodeCoverage-Pester.xml'
 
             - task: PublishTestResults@2
               inputs:
@@ -65,7 +66,7 @@ jobs:
                 testRunner: "NUnit" # !!!
                 # Make sure the file name matches the file name you specified in the Invoke-Pester.ps1 script.
                 # A possibility is to add this as a parameter to the script
-                testResultsFiles: "$(System.ArtifactsDirectory)/TestResults.Pester.xml"
+                testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
                 testRunTitle: "PS_Win2016_Unit"
                 # Make the whole pipeline fail if a test is failed
                 failTaskOnFailedTests: true
@@ -74,7 +75,7 @@ jobs:
 
             - task: PublishCodeCoverageResults@1
               inputs:
-                summaryFileLocation: "**/CodeCoverage.xml"
+                summaryFileLocation: "$(System.ArtifactsDirectory)/CodeCoverage-Pester.xml"
                 failIfCoverageEmpty: false
               displayName: "Publish Unit Test Code Coverage"
               condition: and(in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed'), eq(variables['System.PullRequest.IsFork'], false))
