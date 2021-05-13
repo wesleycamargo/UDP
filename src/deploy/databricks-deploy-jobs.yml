@@ -170,6 +170,7 @@ jobs:
                 token: '$(databricksAccessToken)'
 
             - powershell: |
+                cat C:\Users\VssAdministrator\.databrickscfg
                 databricks workspace list
 
             # - task: deploynotebooks@0
