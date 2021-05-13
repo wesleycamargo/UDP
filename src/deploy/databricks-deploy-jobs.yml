@@ -26,8 +26,28 @@ jobs:
                 artifactName: 'infrastructure'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
-            - powershell: |
-                Get-ChildItem $(System.ArtifactsDirectory) -Recurse
+            - task: Pester@9
+              inputs:
+                # Required Arguments
+                scriptFolder: | 
+                  @{
+                    Path='$(System.ArtifactsDirectory)/tests/pester.tests.ps1'; 
+                    Parameters=@{test='test value'}
+                  }
+                resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
+
+            - task: Pester@9
+              inputs:
+                # Required Arguments
+                scriptFolder: | 
+                  @{Path='$(System.ArtifactsDirectory)/tests/databricks.tests.ps1'; 
+                  Parameters=@{spnClientSecret='$(spnClientSecret)';
+                    spnClientId='$(spnClientId)';
+                    databricksWorkspaceName='${{ parameters.resource.name }}';
+                    databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
+                    keyVaultName='${{ parameters.configuration.keyVaultName }}';
+                    keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'}}
+                resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
 
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
@@ -124,7 +144,14 @@ jobs:
             - task: Pester@9
               inputs:
                 # Required Arguments
-                scriptFolder: "@{Path='$(System.ArtifactsDirectory)/tests'; Parameters=@{spnClientSecret='$(spnClientSecret)';spnClientId='$(spnClientId)';databricksWorkspaceName='${{ parameters.resource.name }}';databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';keyVaultName='${{ parameters.configuration.keyVaultName }}';keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'}"
+                scriptFolder: | 
+                  @{Path='$(System.ArtifactsDirectory)/tests'; 
+                  Parameters=@{spnClientSecret='$(spnClientSecret)';
+                    spnClientId='$(spnClientId)';
+                    databricksWorkspaceName='${{ parameters.resource.name }}';
+                    databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
+                    keyVaultName='${{ parameters.configuration.keyVaultName }}';
+                    keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'}}"
                 resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
                 
         deploy:
