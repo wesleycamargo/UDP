@@ -44,12 +44,17 @@ jobs:
                 # Required Arguments
                 scriptFolder: | 
                   @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
-                  Parameters=@{spnClientSecret='$(spnClientSecret)';
-                    spnClientId='$(spnClientId)';
-                    databricksWorkspaceName='${{ parameters.resource.name }}';
-                    databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
-                    keyVaultName='${{ parameters.configuration.keyVaultName }}';
-                    keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'}}
+                    Parameters=@{
+                      spnClientSecret='$(spnClientSecret)';
+                      spnClientId='$(spnClientId)';
+                      tenant='$(tenant)'
+                      databricksWorkspaceName='${{ parameters.resource.name }}';
+                      databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
+                      keyVaultName='${{ parameters.configuration.keyVaultName }}';
+                      keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
+                    }
+                  }
+
                 resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
                 additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'
 
