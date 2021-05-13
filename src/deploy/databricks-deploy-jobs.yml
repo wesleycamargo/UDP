@@ -176,7 +176,7 @@ jobs:
               displayName: 'Deploy Notebooks to Workspace'
               inputs:
                 notebooksFolderPath: $(System.ArtifactsDirectory)/application/databricks/
-                workspaceFolder: ${{ parameters.resource.application.workspaceDirectory }}
+                workspaceFolder: '/deployments/'
 
 
             # - task: databricksDeployScripts@0
