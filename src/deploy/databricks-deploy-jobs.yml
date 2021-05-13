@@ -180,10 +180,23 @@ jobs:
             #     workspaceFolder: '/deployments/'
 
 
-            - task: databricksDeployScripts@0
+            # - task: databricksDeployScripts@0
+            #   inputs:
+            #     authMethod: 'bearer'
+            #     bearerToken: 'dapibbdd8c723ba16026db30670d51196b5f-2'
+            #     region: 'westeurope'
+            #     localPath: 
+            #     databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
+
+            - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
+              displayName: 'Databricks Notebooks deployment'
               inputs:
-                authMethod: 'bearer'
-                bearerToken: 'dapibbdd8c723ba16026db30670d51196b5f-2'
-                region: 'westeurope'
+                authMethod: servicePrincipal
+                applicationId: $(e831ed10-140d-419f-a4aa-4c48965372d7)
+                spSecret: $(spnClientSecret)
+                resourceGroup: ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                workspace: ${{ parameters.resource.name }}
+                subscriptionId: $(subscriptionId)
+                tenantId: $(tenant)
                 localPath: '$(System.ArtifactsDirectory)/application/databricks/'
                 databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
