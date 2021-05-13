@@ -163,9 +163,7 @@ jobs:
                 Label: 'dev'
 
             - powershell: |
-                Write-Host $(databricksUrl)
-                Write-Host $(databricksWorkspaceURL)
-                Write-Host $(databricksAccessToken)
+                Get-ChildItem $(System.ArtifactsDirectory) -Recurse
 
             - task: configuredatabricks@0
               displayName: Configuring Databricks ${{ parameters.resource.name }}
