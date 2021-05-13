@@ -169,7 +169,7 @@ jobs:
             - task: configuredatabricks@0
               displayName: Configuring Databricks ${{ parameters.resource.name }}
               inputs:
-                url: '$(databricksWorkspaceURLdatabricksWorkspaceURL)'
+                url: '$(databricksWorkspaceURL)'
                 token: '$(databricksAccessToken)'
 
             - task: databricksDeployScripts@0
