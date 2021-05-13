@@ -26,7 +26,6 @@ jobs:
                 artifactName: 'infrastructure'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
-
             - task: AzureResourceManagerTemplateDeployment@3
               inputs:
                 deploymentScope: 'Resource Group'
@@ -148,12 +147,6 @@ jobs:
                 downloadType: 'single'
                 artifactName: 'infrastructure'
                 downloadPath: '$(System.ArtifactsDirectory)'
-            - task: UsePythonVersion@0
-              displayName: Configuring Python Version
-              inputs:
-                versionSpec: '3.x'
-                addToPath: true
-                architecture: 'x64'
 
             - task: AzureAppConfiguration@3
               inputs:
@@ -161,6 +154,13 @@ jobs:
                 ConfigstoreName: 'appconfig5zpayvr2rt6ki'
                 KeyFilter: '*'
                 Label: 'dev'
+            
+            - task: UsePythonVersion@0
+              displayName: Configuring Python Version
+              inputs:
+                versionSpec: '3.x'
+                addToPath: true
+                architecture: 'x64'
 
             - powershell: |
                 Get-ChildItem $(System.ArtifactsDirectory) -Recurse
@@ -170,6 +170,7 @@ jobs:
               inputs:
                 url: '$(databricksWorkspaceURLdatabricksWorkspaceURL)'
                 token: '$(databricksAccessToken)'
+
             - task: databricksDeployScripts@0
               inputs:
                 authMethod: 'bearer'
