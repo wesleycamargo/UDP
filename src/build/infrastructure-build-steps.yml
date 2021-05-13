@@ -14,11 +14,11 @@ steps:
     inputs:
       sourceFolder: 'src\scripts\infrastructure\tests'
       contents: '**' 
-      targetFolder: '$(Build.ArtifactStagingDirectory)\tests'
+      targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\tests'
     displayName: 'Copy Infrastructure'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)\'
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)\infrastructure'
       artifactName: infrastructure
     displayName: 'Publish Infrastructure'
