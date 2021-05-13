@@ -25,6 +25,12 @@ param(
 # $env:PSModulePath = $env:PSModulePath + "$([System.IO.Path]::PathSeparator)C:\lx\repo\wes\UDP\src\scripts\infrastructure\modules\UDP.Deployment"
 # $module = "$powershellModulesDirectory\UDP.Deployment\UDP.Deployment.psm1"
 
+# Install-Module Pester -Force -SkipPublisherCheck
+
+# Get-Module Pester -ListAvailable
+
+# Update-Module Pester -Force
+
 $container = New-PesterContainer -Path '.\databricks.tests.ps1' -Data @{ spnClientId = $spnClientId; `
                                                                          spnClientSecret =  $spnClientSecret; `
                                                                          databricksWorkspaceName = $databricksWorkspaceName; `

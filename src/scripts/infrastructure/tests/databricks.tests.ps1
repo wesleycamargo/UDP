@@ -61,11 +61,18 @@ Describe 'Register Information' {
 
         $secret = Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
 
-        Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secret.id -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+        $regex = "([\w.\/:]+\/secrets\/[\w]+)\/"
+
+        $secret -match $regex
+
+        $secretId = $Matches[1]
+
+        Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
 
         $appConfigSecret = az appconfig kv show -n appconfig5zpayvr2rt6ki --key $keyVaultPATSecretName --label dev | ConvertFrom-Json
 
-        ($appConfigSecret.value | ConvertFrom-Json).uri | Should -Be  $secret.id
+        ($appConfigSecret.value | ConvertFrom-Json).uri | Should -Not -BeNullOrEmpty
+
 
     }
 }        

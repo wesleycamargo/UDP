@@ -43,7 +43,7 @@ extends:
           databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
           keyVaultPATSecretName: dbtoken
           infrastructure:
-            enabled: false
+            enabled: true
             runTests: false
             clusters:
               - name: new-cluster

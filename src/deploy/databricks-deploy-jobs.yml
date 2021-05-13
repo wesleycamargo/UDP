@@ -93,6 +93,8 @@ jobs:
                       -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
                       -keyVaultName ${{ parameters.configuration.keyVaultName }} 
                       -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
+                      -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
+                      -tenant '$(tenant)'
 
                 - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                     - task: AzureCLI@2
