@@ -20,11 +20,8 @@ param(
 # Invoke-Pester ".\databricks.tests.ps1"
 
 
-
-$module = "$powershellModulesDirectory\UDP.Deployment\UDP.Deployment.psm1"
-
-Import-Module $module -Force
-    
+$env:PSModulePath = $env:PSModulePath + "$([System.IO.Path]::PathSeparator)$powershellModulesDirectory\UDP.Deployment"
+# $module = "$powershellModulesDirectory\UDP.Deployment\UDP.Deployment.psm1"
 
 $container = New-PesterContainer -Path '.\databricks.tests.ps1' -Data @{ spnClientId = $spnClientId; `
                                                                          spnClientSecret =  $spnClientSecret; `

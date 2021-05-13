@@ -26,6 +26,9 @@ param(
     
 Describe 'Register Information' {
         
+    $module = "UDP.Deployment"
+
+    Import-Module $module -Force
 
     It 'Should return PAT' {
         

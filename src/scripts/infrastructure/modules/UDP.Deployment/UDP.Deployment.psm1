@@ -152,7 +152,7 @@ function Register-AppConfiguration {
     az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier $keyVaultPATSecretValue -y
 }
 
-
+Export-ModuleMember -Function *
 
 # $pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
