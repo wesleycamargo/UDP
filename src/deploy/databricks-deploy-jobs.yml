@@ -108,41 +108,36 @@ jobs:
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
                       -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+            
+            - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
+                - task: Pester@9
+                  inputs:
+                    scriptFolder: | 
+                      @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
+                        Parameters=@{
+                          spnClientSecret='$(spnClientSecret)';
+                          spnClientId='$(spnClientId)';
+                          tenant='$(tenant)'
+                          databricksWorkspaceName='${{ parameters.resource.name }}';
+                          databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
+                          keyVaultName='${{ parameters.configuration.keyVaultName }}';
+                          keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
+                          customModulesDirectory='$(System.ArtifactsDirectory)/infrastructure/modules'
+                        }
+                      }
 
-            - task: Pester@9
-              inputs:
-                scriptFolder: | 
-                  @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
-                    Parameters=@{
-                      spnClientSecret='$(spnClientSecret)';
-                      spnClientId='$(spnClientId)';
-                      tenant='$(tenant)'
-                      databricksWorkspaceName='${{ parameters.resource.name }}';
-                      databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
-                      keyVaultName='${{ parameters.configuration.keyVaultName }}';
-                      keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
-                      customModulesDirectory='$(System.ArtifactsDirectory)/infrastructure/modules'
-                    }
-                  }
+                    resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
+                    additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'                
 
-                resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
-                additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'                
-
-            - task: PublishTestResults@2
-              inputs:
-                testRunner: "NUnit"
-                testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
-                testRunTitle: "PS_Win2016_Unit"
-                failTaskOnFailedTests: true
-              displayName: "Publish Unit Test Results"
-              condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')
-
-            - task: PublishCodeCoverageResults@1
-              inputs:
-                summaryFileLocation: "$(System.ArtifactsDirectory)/CodeCoverage-Pester.xml"
-                failIfCoverageEmpty: false
-              displayName: "Publish Unit Test Code Coverage"
-              condition: and(in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed'), eq(variables['System.PullRequest.IsFork'], false))
+                - task: PublishTestResults@2
+                  displayName: Infrastructure tests
+                  inputs:
+                    testRunner: "NUnit"
+                    testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
+                    testRunTitle: "PS_Win2016_Unit"
+                    failTaskOnFailedTests: true
+                  displayName: "Publish Unit Test Results"
+                  condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')           
                 
         deploy:
           steps:
@@ -172,15 +167,15 @@ jobs:
                 Write-Host $(databricksWorkspaceURL)
                 Write-Host $(databricksAccessToken)
 
-            # - task: configuredatabricks@0
-            #   displayName: Configuring Databricks $(ArmOutputs.databricksWorkspaceName)
-            #   inputs:
-            #     url: '$(DatabricksWorkspaceURL)'
-            #     token: '$(DatabricksPAT)'
-            # - task: databricksDeployScripts@0
-            #   inputs:
-            #     authMethod: 'bearer'
-            #     bearerToken: '$(DatabricksPAT)'
-            #     region: 'westeurope'
-            #     localPath: '$(System.ArtifactsDirectory)/${{ parameters.artifactName }}/${{ parameters.deploymentConfig.name }}/'
-            #     databricksPath: '${{ parameters.deploymentConfig.workspaceFolder }}'
+            - task: configuredatabricks@0
+              displayName: Configuring Databricks ${{ parameters.resource.name }}
+              inputs:
+                url: '$(databricksWorkspaceURLdatabricksWorkspaceURL)'
+                token: '$(databricksAccessToken)'
+            - task: databricksDeployScripts@0
+              inputs:
+                authMethod: 'bearer'
+                bearerToken: '$(databricksAccessToken)'
+                region: 'westeurope'
+                localPath: '$(System.ArtifactsDirectory)/application/databricks/'
+                databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
