@@ -172,6 +172,9 @@ jobs:
                 url: '$(databricksWorkspaceURL)'
                 token: '$(databricksAccessToken)'
 
+            - powershell: cat C:\Users\VssAdministrator\.databrickscfg
+
+
             - task: databricksDeployScripts@0
               inputs:
                 authMethod: 'bearer'
