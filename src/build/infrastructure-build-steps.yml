@@ -9,7 +9,14 @@ steps:
       contents: '**' 
       targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\${{ parameters.resourceConfiguration.type }}'
     displayName: 'Copy Infrastructure'
-  
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: 'src\scripts\infrastructure\tests'
+      contents: '**' 
+      targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\${{ parameters.resourceConfiguration.type }}'
+    displayName: 'Copy Infrastructure'
+
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)\infrastructure\'
