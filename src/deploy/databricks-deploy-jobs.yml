@@ -163,15 +163,14 @@ jobs:
                 addToPath: true
                 architecture: 'x64'
 
-            - powershell: |
-                Get-ChildItem $(System.ArtifactsDirectory) -Recurse
-
             - task: configuredatabricks@0
               displayName: Configuring Databricks ${{ parameters.resource.name }}
               inputs:
                 url: '$(databricksWorkspaceURL)'
                 token: '$(databricksAccessToken)'
 
+            - powershell: |
+                databricks workspace list
 
             # - task: deploynotebooks@0
             #   displayName: 'Deploy Notebooks to Workspace'
