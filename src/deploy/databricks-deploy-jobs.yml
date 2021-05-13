@@ -172,17 +172,18 @@ jobs:
                 url: '$(databricksWorkspaceURL)'
                 token: '$(databricksAccessToken)'
 
-            - task: deploynotebooks@0
-              displayName: 'Deploy Notebooks to Workspace'
-              inputs:
-                notebooksFolderPath: $(System.ArtifactsDirectory)/application/databricks/
-                workspaceFolder: '/deployments/'
 
-
-            # - task: databricksDeployScripts@0
+            # - task: deploynotebooks@0
+            #   displayName: 'Deploy Notebooks to Workspace'
             #   inputs:
-            #     authMethod: 'bearer'
-            #     bearerToken: '$(databricksAccessToken)'
-            #     region: 'westeurope'
-            #     localPath: '$(System.ArtifactsDirectory)/application/databricks/'
-            #     databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
+            #     notebooksFolderPath: $(System.ArtifactsDirectory)/application/databricks/
+            #     workspaceFolder: '/deployments/'
+
+
+            - task: databricksDeployScripts@0
+              inputs:
+                authMethod: 'bearer'
+                bearerToken: '$(databricksAccessToken)'
+                region: 'westeurope'
+                localPath: '$(System.ArtifactsDirectory)/application/databricks/'
+                databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
