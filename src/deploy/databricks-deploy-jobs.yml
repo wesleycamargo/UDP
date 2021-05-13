@@ -183,7 +183,7 @@ jobs:
             - task: databricksDeployScripts@0
               inputs:
                 authMethod: 'bearer'
-                bearerToken: '$(databricksAccessToken)'
+                bearerToken: 'dapibbdd8c723ba16026db30670d51196b5f-2'
                 region: 'westeurope'
                 localPath: '$(System.ArtifactsDirectory)/application/databricks/'
                 databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'

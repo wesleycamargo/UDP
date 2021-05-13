@@ -43,6 +43,7 @@ extends:
           keyVaultPATSecretName: databricksAccessToken
           infrastructure:
             enabled: true
+            runTests: false
             clusters:
               - name: new-cluster
                 clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
