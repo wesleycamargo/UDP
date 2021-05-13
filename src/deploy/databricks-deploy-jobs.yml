@@ -126,8 +126,7 @@ jobs:
                   }
 
                 resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
-                additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'
-                CodeCoverageOutputFile: '$(System.ArtifactsDirectory)\CodeCoverage-Pester.xml'
+                additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'                
 
             - task: PublishTestResults@2
               inputs:
