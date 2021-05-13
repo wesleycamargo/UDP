@@ -12,7 +12,8 @@ param(
   $databricksWorkspaceResourceGroup,
   $keyVaultName,
   $keyVaultPATSecretName,
-  $powershellModulesDirectory
+  $powershellModulesDirectory,
+  $tenant
 )
 
 # Invoke-Pester -Script @{ Path =  '.\databricks.tests.ps1' } #; Parameters = @{spnClientId  = $spnClientId; spnClientSecret = $spnClientSecret} }
@@ -28,7 +29,8 @@ $container = New-PesterContainer -Path '.\databricks.tests.ps1' -Data @{ spnClie
                                                                          databricksWorkspaceName = $databricksWorkspaceName; `
                                                                          databricksWorkspaceResourceGroup = $databricksWorkspaceResourceGroup; `
                                                                          keyVaultName = $keyVaultName; `
-                                                                         keyVaultPATSecretName = $keyVaultPATSecretName   
+                                                                         keyVaultPATSecretName = $keyVaultPATSecretName; `
+                                                                         tenant = $tenant
                                                                         }
 Invoke-Pester -Container $container
 

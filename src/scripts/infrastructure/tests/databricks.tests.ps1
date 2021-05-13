@@ -1,11 +1,13 @@
 param(
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
-  [string]$spnClientId,  
-
+  [string]$spnClientId,
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
   [string]$spnClientSecret,
+  [Parameter(Mandatory)]
+  [ValidateNotNullOrEmpty()]
+  [string]$tenant,
 
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
@@ -29,6 +31,8 @@ Describe 'Register Information' {
     $module = "UDP.Deployment"
 
     Import-Module $module -Force
+
+    az login --service-principal --username $spnClientId --password $spnClientSecret --tenant $tenant
 
     It 'Should return PAT' {
         
