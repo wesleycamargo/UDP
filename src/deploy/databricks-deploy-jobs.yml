@@ -168,10 +168,11 @@ jobs:
               displayName: 'Configure Databricks CLI'
               inputs:
                 url: 'https://adb-4201552957767638.18.azuredatabricks.net'
-                token: 'dapic86762a2e76c3cebd721fc726ad10149-2'
+                token: $(dbtoken)
 
 
             - powershell: |
+                Write-Host $(dbtoken)
                 cat C:\Users\VssAdministrator\.databrickscfg
                 databricks workspace list --profile AZDO
 
@@ -182,13 +183,13 @@ jobs:
             #     workspaceFolder: '/deployments/'
 
 
-            - task: databricksDeployScripts@0
-              inputs:
-                authMethod: 'bearer'
-                bearerToken: 'dapic86762a2e76c3cebd721fc726ad10149-2'
-                region: 'westeurope'
-                localPath: '$(System.ArtifactsDirectory)/application/databricks/'
-                databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
+            # - task: databricksDeployScripts@0
+            #   inputs:
+            #     authMethod: 'bearer'
+            #     bearerToken: 'dapic86762a2e76c3cebd721fc726ad10149-2'
+            #     region: 'westeurope'
+            #     localPath: '$(System.ArtifactsDirectory)/application/databricks/'
+            #     databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
 
             # - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
             #   displayName: 'Databricks Notebooks deployment'
