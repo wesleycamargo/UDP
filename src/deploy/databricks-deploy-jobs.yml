@@ -145,7 +145,7 @@ jobs:
               inputs:
                 buildType: 'current'
                 downloadType: 'single'
-                artifactName: 'infrastructure'
+                artifactName: 'application'
                 downloadPath: '$(System.ArtifactsDirectory)'
 
             - task: AzureAppConfiguration@3
