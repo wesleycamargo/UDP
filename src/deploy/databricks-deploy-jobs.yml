@@ -84,6 +84,8 @@ jobs:
               
             - powershell: |
                 Write-Host "output $(ArmOutputs.databricksWorkspaceName)"
+                Write-Host "output $(ArmOutputs.workspaceUrl)"
+                
                 
 
             
@@ -118,6 +120,13 @@ jobs:
                       -spnClientSecret $(spnClientSecret)
                       -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
                       -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+
+            - task: Pester@9
+              inputs:
+                # Required Arguments
+                scriptFolder: "@{Path='$(System.ArtifactsDirectory)/tests'; Parameters=@{spnClientSecret='$(spnClientSecret)';spnClientId='$(spnClientId)';databricksWorkspaceName='${{ parameters.resource.name }}';databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';keyVaultName='${{ parameters.configuration.keyVaultName }}';keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'}"
+                resultsFile: '$(System.ArtifactsDirectory)\Test-Pester.XML'
+                
         deploy:
           steps:
             - task: DownloadBuildArtifacts@0
