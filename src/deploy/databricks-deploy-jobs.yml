@@ -79,6 +79,23 @@ jobs:
                     Convert-ArmOutputToPsObject -ArmOutputString '$(ArmOutputs)' -Verbose
                   displayName: "Parsing outputs from ARM deployment to pipeline variables"
                   
+                - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
+                    - task: AzureCLI@2
+                      displayName: Create Cluster
+                      inputs:
+                        azureSubscription: $(ServiceConnectionName)
+                        scriptLocation: "scriptPath"
+                        scriptType: "pscore"
+                        scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\New-DatabricksCluster.ps1'
+                        arguments: >
+                          -clusterName ${{ cluster.name }}
+                          -clusterConfigurationFile ${{ cluster.clusterConfigurationFile }}
+                          -tenant $(tenant)
+                          -spnClientId $(spnClientId)
+                          -spnClientSecret $(spnClientSecret)
+                          -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
+                          -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+
                 - task: AzureCLI@2
                   displayName: Register Databricks PAT
                   inputs:
@@ -96,24 +113,8 @@ jobs:
                       -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
                       -tenant '$(tenant)'
                       -appConfigName ${{ parameters.configuration.appConfigName }} 
+                      -clusterName ${{ cluster.name }}
 
-                - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
-                    - task: AzureCLI@2
-                      displayName: Create Cluster
-                      inputs:
-                        azureSubscription: $(ServiceConnectionName)
-                        scriptLocation: "scriptPath"
-                        scriptType: "pscore"
-                        scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\New-DatabricksCluster.ps1'
-                        arguments: >
-                          -clusterName ${{ cluster.name }}
-                          -clusterConfigurationFile ${{ cluster.clusterConfigurationFile }}
-                          -tenant $(tenant)
-                          -spnClientId $(spnClientId)
-                          -spnClientSecret $(spnClientSecret)
-                          -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                          -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
-                
                 - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
                     - task: Pester@9
                       displayName: Infrastructure tests

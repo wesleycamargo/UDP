@@ -93,6 +93,35 @@ function Get-DatabricksPAT {
     return $pat
 }
 
+function Get-DatabricksClusters {
+    param (
+        [string]$clusterName,
+        [string]$clusterConfigurationFile,
+        [string]$tenant,
+        [string]$spnClientId,
+        [string]$spnClientSecret,
+        [string]$databricksWorkspaceName,
+        [string]$databricksWorkspaceResourceGroup
+    )
+
+    $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+
+    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
+    $databricksResourceId = $databricksWorkspace.id
+
+    $adToken = Get-ActiveDirectoryToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+    $managementEndpointToken = Get-ManagementEndpointToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+
+    $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+    $header.Add("Authorization", "Bearer $adToken")
+    $header.Add("X-Databricks-Azure-SP-Management-Token", "$managementEndpointToken")
+    $header.Add("X-Databricks-Azure-Workspace-Resource-Id", "$databricksResourceId")
+
+    $existingClusters = Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/clusters/list" -Method "GET" -Headers $header
+
+    return $existingClusters
+}
+
 function Register-DatabricksPATIntoKeyVault {
     param (
         $pat,
@@ -110,14 +139,20 @@ function Register-DatabricksPATIntoKeyVault {
 
 function Register-AppConfiguration {
     param (
-        $appconfigName,
-        $label = "dev",
-        $keyVaultPATSecretName,
-        $keyVaultPATSecretValue,
+        [string]$appconfigName,
+        [string]$label = "dev",
+        [string]$keyVaultPATSecretName,
+        [string]$keyVaultPATSecretValue,
         [string]$databricksWorkspaceName,
-        [string]$databricksWorkspaceResourceGroup
+        [string]$databricksWorkspaceResourceGroup,
+        [string]$clusterName,
+        
+        [string]$clusterConfigurationFile,
+        [string]$tenant,
+        [string]$spnClientId,
+        [string]$spnClientSecret        
     )
-
+    
     $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
 
     $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
@@ -133,8 +168,21 @@ function Register-AppConfiguration {
     if($return.value){
         Write-Host "databricksResourceId successfully registered into AppConfiguration"
     }
+
+    if($null -ne $clusterName){
+        $clusters = Get-DatabricksClusters -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+        $clusters[0].cluster_id
+
+        $return = az appconfig kv set -n $appconfigName --key databricksClusterId --label dev --value $clusters.clusters[0].cluster_id -y | ConvertFrom-Json
+        if($return.value){
+            Write-Host "databricksClusterId successfully registered into AppConfiguration"
+        }
+    }
     
-    az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier $keyVaultPATSecretValue -y
+    $return = az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier $keyVaultPATSecretValue -y | ConvertFrom-Json
+    if($return.value){
+        Write-Host "$keyVaultPATSecretName successfully linked into AppConfiguration"
+    }
 }
 
 
@@ -142,4 +190,4 @@ function Register-AppConfiguration {
 
 # Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
 
-# Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName
+# Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretNameaz appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier $keyVaultPATSecretValue -y | ConvertFrom-Json
