@@ -68,11 +68,11 @@ stages:
                     parameters:
                       resource: ${{ resource }}
                       configuration: ${{ parameters.configuration }}
-              - ${{ if eq(resource.type, 'infrastructure') }}:
-                  - template: .\deploy\infrastructure-deploy-jobs.yml 
-                    parameters:
-                      resource: ${{ resource }}
-                      configuration: ${{ parameters.configuration }}
+          - ${{ if eq(resource.type, 'infrastructure') }}:
+              - template: .\deploy\infrastructure-deploy-jobs.yml 
+                parameters:
+                  resource: ${{ resource }}
+                  configuration: ${{ parameters.configuration }}
         
         # - ${{ each resource in parameters.configuration.resources }}:
           
