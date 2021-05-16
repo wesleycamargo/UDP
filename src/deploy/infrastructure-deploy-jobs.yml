@@ -22,7 +22,9 @@ jobs:
                     artifactName: 'infrastructure'
                     downloadPath: '$(System.ArtifactsDirectory)'
 
-                - powershell: Write-Host ${{ parameters.resource }}
+                - powershell: |
+                    Write-Host ConvertFrom-Json '${{ convertToJson(parameters.resource) }}'  
+                    
 
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
