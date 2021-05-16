@@ -23,6 +23,11 @@ stages:
           - template: .\build\databricks-build-jobs.yml 
             parameters: 
               resourceConfiguration: ${{ resource }}
+    - ${{ each resource in parameters.configuration.resources }}:
+      - ${{ if eq(resource.type, 'infrastructure') }}:
+          - template: .\build\infrastructure-build-jobs.yml 
+            parameters: 
+              resourceConfiguration: ${{ resource }}
 
 - ${{ each env in parameters.environments }}:
   - stage:  ${{ env }}
