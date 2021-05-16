@@ -200,10 +200,18 @@
                 "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]"
             ],
             "properties": {
-                // "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
                 "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
                 "accessPolicies": [
-   
+                    {
+                        "objectId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
+                        "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+                        "permissions": {
+                            "secrets": [
+                                "Get",
+                                "List"
+                            ]
+                        }
+                    }
                 ],
                 "sku": {
                     "name": "Standard",
