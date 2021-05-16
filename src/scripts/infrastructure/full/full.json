@@ -33,7 +33,7 @@
         "roleNameGuid": {
             "type": "string",
             // "defaultValue": "[newGuid()]",
-            "defaultValue": "[guid(resourceGroup().id)]",            
+            "defaultValue": "[guid(resourceGroup().id)]",
             "metadata": {
                 "description": "A new GUID used to identify the role assignment"
             }
@@ -41,6 +41,10 @@
         "databricksWorkspaceName": {
             "defaultValue": "[concat('databricks', uniqueString(resourceGroup().id))]",
             "type": "String"
+        },
+        "appConfigurationName": {
+            "type": "string",
+            "defaultValue": "[concat('appconfig', uniqueString(resourceGroup().id))]"
         }
     },
     "variables": {
@@ -133,6 +137,27 @@
             "properties": {
 
                 "managedResourceGroupId": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('managedResourceGroupName'))]"
+            }
+        },
+        {
+            "type": "Microsoft.AppConfiguration/configurationStores",
+            "apiVersion": "2020-07-01-preview",
+            "name": "[parameters('appConfigurationName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "standard"
+            }
+        },
+        {
+            "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+            "apiVersion": "2020-07-01-preview",
+            "name": "[concat(parameters('appConfigurationName'), '/databricksWorkspaceURL')]",
+            "dependsOn": [
+                "[parameters('appConfigurationName')]"
+            ],
+            "properties": {
+                "value": "[concat('https://',reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))).workspaceUrl)]",
+                "contentType": "string"
             }
         }
     ]
