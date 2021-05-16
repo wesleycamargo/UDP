@@ -37,7 +37,15 @@ extends:
     configuration:
       keyVaultName: keyvault5zpayvr2rt6ki
       appConfigName: appconfig5zpayvr2rt6ki
+      resourceGroup: RG-ARMIntrastructure
       resources:
+        - name: infrastructure
+          type: infrastructure
+          dataFactoryName: adf-armtemplate
+          storageAccountName: stgarmtemplate
+          blobContainerName: containerarmtemplate
+          databricksWorkspaceName: db-armtemplate
+      
         - name: databricks-udp2
           type: databricks
           databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"

@@ -1,0 +1,174 @@
+parameters:
+  - name: configuration
+    type: object
+  - name: resource
+    type: object
+
+
+
+jobs:
+  - deployment: 
+    displayName: Azure Databricks Deployment
+    environment: develop
+    strategy:
+      runOnce:
+        ${{ if eq( parameters.resource.infrastructure.enabled, true) }}:
+            preDeploy:
+              steps:
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    buildType: 'current'
+                    downloadType: 'single'
+                    artifactName: 'infrastructure'
+                    downloadPath: '$(System.ArtifactsDirectory)'
+
+                - task: AzureResourceManagerTemplateDeployment@3
+                  inputs:
+                    deploymentScope: 'Resource Group'
+                    azureResourceManagerConnection: $(serviceConnection)
+                    subscriptionId: $(subscriptionId)
+                    action: 'Create Or Update Resource Group'
+                    resourceGroupName: ${{ parameters.configuration.resourceGroup }}
+                    location: 'North Europe'
+                    templateLocation: 'Linked artifact'
+                    csmFile: '$(System.ArtifactsDirectory)\infrastructure\full\full.json'
+                    deploymentMode: 'Incremental'
+                    deploymentOutputs: 'ArmOutputs'
+                    overrideParameters: |
+                      -dataFactoryName ${{ parameters.resource.dataFactoryName }}
+                      -storageAccountName ${{ parameters.resource.storageAccountName }}
+                      -blobContainerName ${{ parameters.resource.blobContainerName }}
+                      -databricksWorkspaceName ${{ parameters.resource.databricksWorkspaceName }}
+
+                  
+                # - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
+                #     - task: AzureCLI@2
+                #       displayName: Create Cluster
+                #       inputs:
+                #         azureSubscription: $(ServiceConnectionName)
+                #         scriptLocation: "scriptPath"
+                #         scriptType: "pscore"
+                #         scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\New-DatabricksCluster.ps1'
+                #         arguments: >
+                #           -clusterName ${{ cluster.name }}
+                #           -clusterConfigurationFile ${{ cluster.clusterConfigurationFile }}
+                #           -tenant $(tenant)
+                #           -spnClientId $(spnClientId)
+                #           -spnClientSecret $(spnClientSecret)
+                #           -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
+                #           -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                #           -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
+                #           -appConfigName ${{ parameters.configuration.appConfigName }} 
+
+                # - task: AzureCLI@2
+                #   displayName: Register Databricks PAT
+                #   inputs:
+                #     azureSubscription: $(ServiceConnectionName)
+                #     scriptLocation: "scriptPath"
+                #     scriptType: "pscore"
+                #     scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-AppConfig.ps1'
+                #     arguments: >
+                #       -spnClientId $(spnClientId)
+                #       -spnClientSecret $(spnClientSecret)
+                #       -databricksWorkspaceName ${{ parameters.resource.name }}
+                #       -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                #       -keyVaultName ${{ parameters.configuration.keyVaultName }} 
+                #       -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
+                #       -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
+                #       -tenant '$(tenant)'
+                #       -appConfigName ${{ parameters.configuration.appConfigName }} 
+
+                # - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
+                #     - task: Pester@9
+                #       displayName: Infrastructure tests
+                #       inputs:
+                #         scriptFolder: | 
+                #           @{Path='$(System.ArtifactsDirectory)/infrastructure/tests/databricks.tests.ps1'; 
+                #             Parameters=@{
+                #               spnClientSecret='$(spnClientSecret)';
+                #               spnClientId='$(spnClientId)';
+                #               tenant='$(tenant)'
+                #               databricksWorkspaceName='${{ parameters.resource.name }}';
+                #               databricksWorkspaceResourceGroup='${{ parameters.resource.databricksWorkspaceResourceGroup }}';
+                #               keyVaultName='${{ parameters.configuration.keyVaultName }}';
+                #               keyVaultPATSecretName='${{ parameters.resource.keyVaultPATSecretName }}'
+                #               customModulesDirectory='$(System.ArtifactsDirectory)/infrastructure/modules'
+                #             }
+                #           }
+
+                #         resultsFile: '$(System.ArtifactsDirectory)\TestResults-Pester.xml'
+                #         additionalModulePath: '$(System.ArtifactsDirectory)/infrastructure/modules'                
+
+                #     - task: PublishTestResults@2                  
+                #       inputs:
+                #         testRunner: "NUnit"
+                #         testResultsFiles: "$(System.ArtifactsDirectory)/TestResults-Pester.xml"
+                #         testRunTitle: "PS_Win2016_Unit"
+                #         failTaskOnFailedTests: true
+                #       displayName: "Publish Unit Test Results"
+                #       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')           
+                
+        deploy:
+          steps:
+            - task: DownloadBuildArtifacts@0
+              displayName: Downloading artifacts databricks
+              inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'application'
+                downloadPath: '$(System.ArtifactsDirectory)'
+
+            - task: AzureAppConfiguration@3
+              inputs:
+                azureSubscription: 'MVP Sponsorship'
+                ConfigstoreName: 'appconfig5zpayvr2rt6ki'
+                KeyFilter: '*'
+                Label: 'dev'
+            
+            - task: UsePythonVersion@0
+              displayName: Configuring Python Version
+              inputs:
+                versionSpec: '3.x'
+                addToPath: true
+                architecture: 'x64'
+
+            - task: riserrad.azdo-databricks.azdo-databricks-configuredatabricks.configuredatabricks@0
+              displayName: 'Configure Databricks CLI'
+              inputs:
+                url: 'https://adb-4201552957767638.18.azuredatabricks.net'
+                token: $(databricksAccessToken)
+
+
+            - powershell: |
+                Write-Host $(databricksAccessToken)
+                cat C:\Users\VssAdministrator\.databrickscfg
+                databricks workspace list --profile AZDO
+                databricks workspace import_dir -o --profile AZDO $(System.ArtifactsDirectory)/application/databricks/ /Shared/deployments
+
+            # - task: deploynotebooks@0
+            #   displayName: 'Deploy Notebooks to Workspace'
+            #   inputs:
+            #     notebooksFolderPath: $(System.ArtifactsDirectory)/application/databricks/
+            #     workspaceFolder: '/deployments/'
+
+
+            # - task: databricksDeployScripts@0
+            #   inputs:
+            #     authMethod: 'bearer'
+            #     bearerToken: 'dapic86762a2e76c3cebd721fc726ad10149-2'
+            #     region: 'westeurope'
+            #     localPath: '$(System.ArtifactsDirectory)/application/databricks/'
+            #     databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
+
+            # - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
+            #   displayName: 'Databricks Notebooks deployment'
+            #   inputs:
+            #     authMethod: servicePrincipal
+            #     applicationId: $(e831ed10-140d-419f-a4aa-4c48965372d7)
+            #     spSecret: $(spnClientSecret)
+            #     resourceGroup: ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+            #     workspace: ${{ parameters.resource.name }}
+            #     subscriptionId: $(subscriptionId)
+            #     tenantId: $(tenant)
+            #     localPath: '$(System.ArtifactsDirectory)/application/databricks/'
+            #     databricksPath: '${{ parameters.resource.application.workspaceDirectory }}'
