@@ -111,7 +111,7 @@ jobs:
                           -tenant $(tenant)
                           -spnClientId $(spnClientId)
                           -spnClientSecret $(spnClientSecret)
-                          -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
+                          -databricksWorkspaceName $(resource.name)
                           -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
                 
                 - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
