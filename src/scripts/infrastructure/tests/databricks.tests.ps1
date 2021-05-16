@@ -24,7 +24,10 @@ param(
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
   $keyVaultPATSecretName,
-  $customModulesDirectory
+  $customModulesDirectory,
+
+  $clusterName,
+  $clusterConfigurationFile
 )
     
 Describe 'Register Information' {
@@ -36,6 +39,11 @@ Describe 'Register Information' {
     Import-Module $module -Force
 
     az login --service-principal --username $spnClientId --password $spnClientSecret --tenant $tenant
+
+    It 'Should return databricks clusters' {
+        $clusters = Get-DatabricksClusters -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+        $clusters.count | Should -BeGreaterThan 0
+    }
 
     It 'Should return PAT' {
         
@@ -67,12 +75,12 @@ Describe 'Register Information' {
 
         $secretId = $Matches[1]
 
-        Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+        Register-AppConfiguration -appconfigName appconfig5zpayvr2rt6ki -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
 
         $appConfigSecret = az appconfig kv show -n appconfig5zpayvr2rt6ki --key $keyVaultPATSecretName --label dev | ConvertFrom-Json
-
         ($appConfigSecret.value | ConvertFrom-Json).uri | Should -Not -BeNullOrEmpty
 
-
+        $databricksClusterId = az appconfig kv show -n appconfig5zpayvr2rt6ki --key databricksClusterId --label dev | ConvertFrom-Json
+        $databricksClusterId.value | Should -Not -BeNullOrEmpty
     }
 }        

@@ -41,7 +41,8 @@ param(
   [Parameter(Mandatory)]
   [ValidateNotNullOrEmpty()]
   $keyVaultPATSecretName,
-  $customModulesDirectory
+  $customModulesDirectory,
+  $clusterName
 )
 
 $module = "UDP.Deployment"
@@ -61,4 +62,4 @@ $secret -match $regex
 
 $secretId = $Matches[1]
 
-Register-AppConfiguration -appconfigName $appConfigName -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+Register-AppConfiguration -appconfigName $appConfigName -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup -clusterName $clusterName

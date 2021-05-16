@@ -13,7 +13,9 @@ param(
   $keyVaultName,
   $keyVaultPATSecretName,
   $customModulesDirectory,
-  $tenant
+  $tenant,
+  $clusterName,
+  $clusterConfigurationFile
 )
 
 # Invoke-Pester -Script @{ Path =  '.\databricks.tests.ps1' } #; Parameters = @{spnClientId  = $spnClientId; spnClientSecret = $spnClientSecret} }
@@ -38,8 +40,12 @@ $container = New-PesterContainer -Path '.\databricks.tests.ps1' -Data @{ spnClie
                                                                          keyVaultName = $keyVaultName; `
                                                                          keyVaultPATSecretName = $keyVaultPATSecretName; `
                                                                          tenant = $tenant; `
-                                                                         customModulesDirectory = $customModulesDirectory
+                                                                         customModulesDirectory = $customModulesDirectory; `
+                                                                         clusterName = $clusterName; `
+                                                                         clusterConfigurationFile = $clusterConfigurationFile
                                                                         }
 Invoke-Pester -Container $container
+
+
 
 # Invoke-Pester -Script @{ Path =  'C:\lx\repo\wes\UDP\src\scripts\tests\databricks.tests.ps1' }
