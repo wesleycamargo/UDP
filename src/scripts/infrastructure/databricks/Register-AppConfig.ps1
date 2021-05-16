@@ -62,4 +62,4 @@ $secret -match $regex
 
 $secretId = $Matches[1]
 
-Register-AppConfiguration -appconfigName $appConfigName -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup -clusterName $clusterName
+Register-AppConfiguration -appconfigName $appConfigName -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
