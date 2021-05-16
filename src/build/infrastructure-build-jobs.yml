@@ -6,9 +6,32 @@ jobs:
   - job: infrastructurebuild
     displayName: Azure Infrastructure Build
     steps:
-      - template: .\infrastructure-build-steps.yml
-        parameters:
-          resourceConfiguration: ${{ parameters.resourceConfiguration }}
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: 'src\scripts\infrastructure\full'
+          contents: '**' 
+          targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\full'
+        displayName: 'Copy Infrastructure'
+
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: 'src\scripts\infrastructure\tests'
+          contents: '**' 
+          targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\tests'
+        displayName: 'Copy Infrastructure'
+
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: 'src\scripts\infrastructure\modules'
+          contents: '**' 
+          targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\modules'
+        displayName: 'Copy Infrastructure'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)\infrastructure'
+          artifactName: infrastructure
+        displayName: 'Publish Infrastructure'
 
 
     # - task: CopyFiles@2
