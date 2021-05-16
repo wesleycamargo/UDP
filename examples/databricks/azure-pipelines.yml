@@ -42,7 +42,7 @@ extends:
         - name: infrastructure
           type: infrastructure
           dataFactoryName: adf-armtemplate
-          storageAccountName: stgarmtemplate
+          storageAccountName: udpstgarmtemplate
           blobContainerName: containerarmtemplate
           databricksWorkspaceName: db-armtemplate
           enabled: true
