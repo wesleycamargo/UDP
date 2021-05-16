@@ -25,20 +25,20 @@ jobs:
                 - powershell: |
                     Write-Host ConvertFrom-Json '${{ convertToJson(parameters.resource) }}'  
 
-                - task: AzureResourceManagerTemplateDeployment@3
-                  inputs:
-                    deploymentScope: 'Resource Group'
-                    azureResourceManagerConnection: $(serviceConnection)
-                    subscriptionId: $(subscriptionId)
-                    action: 'Create Or Update Resource Group'
-                    resourceGroupName: ${{ parameters.configuration.resourceGroup }}
-                    location: 'North Europe'
-                    templateLocation: 'Linked artifact'
-                    csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
-                    deploymentMode: 'Incremental'
-                    deploymentOutputs: 'ArmOutputs'
-                    overrideParameters: |
-                      -databricksWorkspaceName ${{ parameters.resource.databricksWorkspaceName }}                    
+                # - task: AzureResourceManagerTemplateDeployment@3
+                #   inputs:
+                #     deploymentScope: 'Resource Group'
+                #     azureResourceManagerConnection: $(serviceConnection)
+                #     subscriptionId: $(subscriptionId)
+                #     action: 'Create Or Update Resource Group'
+                #     resourceGroupName: ${{ parameters.configuration.resourceGroup }}
+                #     location: 'North Europe'
+                #     templateLocation: 'Linked artifact'
+                #     csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
+                #     deploymentMode: 'Incremental'
+                #     deploymentOutputs: 'ArmOutputs'
+                #     overrideParameters: |
+                #       -databricksWorkspaceName ${{ parameters.resource.databricksWorkspaceName }}                    
 
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
