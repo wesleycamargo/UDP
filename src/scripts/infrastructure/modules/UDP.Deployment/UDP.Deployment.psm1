@@ -142,31 +142,11 @@ function Register-AppConfiguration {
         [string]$appconfigName,
         [string]$label = "dev",
         [string]$keyVaultPATSecretName,
-        [string]$keyVaultPATSecretValue,
-        [string]$databricksWorkspaceName,
-        [string]$databricksWorkspaceResourceGroup,
-        [string]$tenant,
-        [string]$spnClientId,
-        [string]$spnClientSecret        
+        [string]$keyVaultPATSecretValue       
     )
     
-    $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
-
-    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
-    $databricksResourceId = $databricksWorkspace.id
-
-    
-    $return = az appconfig kv set -n $appconfigName --key databricksWorkspaceURL --label dev --value $databricksWorkspaceURL -y | ConvertFrom-Json
-    if ($return.value) {
-        Write-Host "databricksWorkspaceURL successfully registered into AppConfiguration"
-    }
-    
-    $return = az appconfig kv set -n $appconfigName --key databricksResourceId --label dev --value $databricksResourceId -y | ConvertFrom-Json
-    if ($return.value) {
-        Write-Host "databricksResourceId successfully registered into AppConfiguration"
-    }
-
     $return = az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier $keyVaultPATSecretValue -y | ConvertFrom-Json
+    
     if ($return.value) {
         Write-Host "$keyVaultPATSecretName successfully linked into AppConfiguration"
     }
