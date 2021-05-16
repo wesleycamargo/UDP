@@ -8,11 +8,11 @@ parameters:
 
 jobs:
   - deployment: 
-    displayName: Azure Databricks Deployment
+    displayName: Infrastructure Deployment
     environment: develop
     strategy:
       runOnce:
-        ${{ if eq( parameters.resource.infrastructure.enabled, true) }}:
+        ${{ if eq( parameters.resource.enabled, true) }}:
             preDeploy:
               steps:
                 - task: DownloadBuildArtifacts@0
