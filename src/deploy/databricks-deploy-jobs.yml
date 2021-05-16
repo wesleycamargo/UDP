@@ -95,6 +95,7 @@ jobs:
                           -spnClientSecret $(spnClientSecret)
                           -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
                           -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                          -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
 
                 - task: AzureCLI@2
                   displayName: Register Databricks PAT

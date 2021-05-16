@@ -10,7 +10,7 @@ param (
     [string]$tenant,
     [string]$spnClientId,
     [string]$spnClientSecret,
-    $customModulesDirectory
+    [string]$customModulesDirectory
 )
 
 $module = "UDP.Deployment"
