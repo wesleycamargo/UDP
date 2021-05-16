@@ -45,6 +45,10 @@
         "appConfigurationName": {
             "type": "string",
             "defaultValue": "[concat('appconfig', uniqueString(resourceGroup().id))]"
+        },
+        "keyVaultName": {
+            "type": "string",
+            "defaultValue": "[concat('keyvault', uniqueString(resourceGroup().id))]"
         }
     },
     "variables": {
@@ -186,6 +190,36 @@
                 //     }
                 // }
             ]
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('keyVaultName')]",
+            "location": "[parameters('location')]",
+             "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]"
+            ],
+            "properties": {
+                // "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+                "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+                "accessPolicies": [
+                    {
+                        "objectId": "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+                        "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+                        "permissions": {
+                            "secrets": ["list","get"]
+                        }
+                    }
+                ],
+                "sku": {
+                    "name": "Standard",
+                    "family": "A"
+                },
+                "networkAcls": {
+                    "defaultAction": "Allow",
+                    "bypass": "AzureServices"
+                }
+            }
         }
     ]
 }
