@@ -191,38 +191,64 @@
                 // }
             ]
         },
-        {
+
+{
+            "name": "[parameters('keyVaultName')]",
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2019-09-01",
-            "name": "[parameters('keyVaultName')]",
             "location": "[parameters('location')]",
-             "dependsOn": [
-                "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]"
-            ],
             "properties": {
-                "enableRbacAuthorization": true,
                 "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
-                // "accessPolicies": [
-                //     {
-                //         "objectId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
-                //         "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
-                //         "permissions": {
-                //             "secrets": [
-                //                 "Get",
-                //                 "List"
-                //             ]
-                //         }
-                //     }
-                // ],
                 "sku": {
-                    "name": "Standard",
-                    "family": "A"
+                    "family": "A",
+                    "name": "standard'"
                 },
+                
+                "enableRbacAuthorization": true,
                 "networkAcls": {
                     "defaultAction": "Allow",
                     "bypass": "AzureServices"
                 }
-            }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]"
+            ]
         }
+
+
+
+        // {
+        //     "type": "Microsoft.KeyVault/vaults",
+        //     "apiVersion": "2019-09-01",
+        //     "name": "[parameters('keyVaultName')]",
+        //     "location": "[parameters('location')]",
+        //      "dependsOn": [
+        //         "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]"
+        //     ],
+        //     "properties": {
+        //         "enableRbacAuthorization": true,
+        //         "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+        //         // "accessPolicies": [
+        //         //     {
+        //         //         "objectId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
+        //         //         "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+        //         //         "permissions": {
+        //         //             "secrets": [
+        //         //                 "Get",
+        //         //                 "List"
+        //         //             ]
+        //         //         }
+        //         //     }
+        //         // ],
+        //         "sku": {
+        //             "name": "Standard",
+        //             "family": "A"
+        //         },
+        //         "networkAcls": {
+        //             "defaultAction": "Allow",
+        //             "bypass": "AzureServices"
+        //         }
+        //     }
+        // }
     ]
 }
