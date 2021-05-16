@@ -63,23 +63,23 @@ jobs:
                 #           -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
                 #           -appConfigName ${{ parameters.configuration.appConfigName }} 
 
-                # - task: AzureCLI@2
-                #   displayName: Register Databricks PAT
-                #   inputs:
-                #     azureSubscription: $(ServiceConnectionName)
-                #     scriptLocation: "scriptPath"
-                #     scriptType: "pscore"
-                #     scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-AppConfig.ps1'
-                #     arguments: >
-                #       -spnClientId $(spnClientId)
-                #       -spnClientSecret $(spnClientSecret)
-                #       -databricksWorkspaceName ${{ parameters.resource.name }}
-                #       -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
-                #       -keyVaultName ${{ parameters.configuration.keyVaultName }} 
-                #       -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
-                #       -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
-                #       -tenant '$(tenant)'
-                #       -appConfigName ${{ parameters.configuration.appConfigName }} 
+                - task: AzureCLI@2
+                  displayName: Register App Config
+                  inputs:
+                    azureSubscription: $(ServiceConnectionName)
+                    scriptLocation: "scriptPath"
+                    scriptType: "pscore"
+                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\databricks\Register-AppConfig.ps1'
+                    arguments: >
+                      -spnClientId $(spnClientId)
+                      -spnClientSecret $(spnClientSecret)
+                      -databricksWorkspaceName ${{ parameters.resource.name }}
+                      -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                      -keyVaultName ${{ parameters.configuration.keyVaultName }} 
+                      -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
+                      -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
+                      -tenant '$(tenant)'
+                      -appConfigName ${{ parameters.configuration.appConfigName }} 
 
                 # - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
                 #     - task: Pester@9

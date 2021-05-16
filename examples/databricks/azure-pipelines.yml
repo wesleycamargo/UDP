@@ -50,6 +50,9 @@ extends:
             name: containerarmtemplate
           databricksWorkspace:
             name: db-armtemplate
+            clusters:
+              - name: new-cluster
+                clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
       
         - name: databricks-udp2
           type: databricks
