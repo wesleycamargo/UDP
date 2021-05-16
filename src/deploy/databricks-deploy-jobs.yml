@@ -106,7 +106,7 @@ jobs:
                     arguments: >
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
-                      -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
+                      -databricksWorkspaceName ${{ parameters.resource.name }}
                       -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
                       -keyVaultName ${{ parameters.configuration.keyVaultName }} 
                       -keyVaultPATSecretName ${{ parameters.resource.keyVaultPATSecretName }}
