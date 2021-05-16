@@ -43,7 +43,8 @@ jobs:
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
                     deploymentScope: 'Resource Group'
-                    azureResourceManagerConnection: $(serviceConnection)
+                    # azureResourceManagerConnection: $(serviceConnection)
+                    azureResourceManagerConnection: 'MVP Sponsorship'
                     subscriptionId: $(subscriptionId)
                     action: 'Create Or Update Resource Group'
                     resourceGroupName: ${{ parameters.configuration.resourceGroup }}
@@ -58,7 +59,17 @@ jobs:
                       -blobContainerName '${{ parameters.resource.blobContainerName }}'
                       -databricksWorkspaceName '${{ parameters.resource.databricksWorkspaceName }}'
 
-
+                
+                # - task: AzureResourceManagerTemplateDeployment@3
+                #   displayName: 'ARM Template deployment: Resource Group scope'
+                #   inputs:
+                #     azureResourceManagerConnection: 'MVP Sponsorship'
+                #     subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
+                #     resourceGroupName: 'RG-ARMTest'
+                #     location: 'North Europe'
+                #     csmFile: '$(System.DefaultWorkingDirectory)/_TesteADF/datafactory5zpayvr2rt6ki/ARMTemplateForFactory.json'
+                #     csmParametersFile: '$(System.DefaultWorkingDirectory)/_TesteADF/datafactory5zpayvr2rt6ki/ARMTemplateParametersForFactory.json'
+                #     overrideParameters: '-factoryName "adf-westeste" -AzureDatabricks1_domain "https://adb-4201552957767638.18.azuredatabricks.net" -AzureDatabricks1_workspaceResourceId "/subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/resourceGroups/RG-ARMdatapipeline/providers/Microsoft.Databricks/workspaces/databricks-udp2" -AzureDatabricks1_existingClusterId "0513-164630-wok371" -ArmtemplateStorageLinkedService_serviceEndpoint "https://storage5zpayvr2rt6ki.blob.core.windows.net/"'
 
                   
                 # - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
