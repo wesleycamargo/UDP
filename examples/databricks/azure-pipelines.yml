@@ -41,11 +41,15 @@ extends:
       resources:
         - name: infrastructure
           type: infrastructure
-          dataFactoryName: adf-armtemplate
-          storageAccountName: udpstgarmtemplate
-          blobContainerName: containerarmtemplate
-          databricksWorkspaceName: db-armtemplate
           enabled: true
+          dataFactory:
+            name: adf-armtemplate
+          storageAccount:
+            name: udpstgarmtemplate
+          blobContainer:
+            name: containerarmtemplate
+          databricksWorkspace:
+            name: db-armtemplate
       
         - name: databricks-udp2
           type: databricks

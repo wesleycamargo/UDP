@@ -13,7 +13,7 @@ jobs:
     strategy:
       runOnce:
         ${{ if eq( parameters.resource.enabled, true) }}:
-            preDeploy:
+            deploy:
               steps:
                 - task: DownloadBuildArtifacts@0
                   inputs:
@@ -24,21 +24,6 @@ jobs:
 
                 - powershell: |
                     Write-Host ConvertFrom-Json '${{ convertToJson(parameters.resource) }}'  
-
-                # - task: AzureResourceManagerTemplateDeployment@3
-                #   inputs:
-                #     deploymentScope: 'Resource Group'
-                #     azureResourceManagerConnection: $(serviceConnection)
-                #     subscriptionId: $(subscriptionId)
-                #     action: 'Create Or Update Resource Group'
-                #     resourceGroupName: ${{ parameters.configuration.resourceGroup }}
-                #     location: 'North Europe'
-                #     templateLocation: 'Linked artifact'
-                #     csmFile: '$(System.ArtifactsDirectory)\infrastructure\databricks\databricks.json'
-                #     deploymentMode: 'Incremental'
-                #     deploymentOutputs: 'ArmOutputs'
-                #     overrideParameters: |
-                #       -databricksWorkspaceName ${{ parameters.resource.databricksWorkspaceName }}                    
 
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
@@ -54,24 +39,11 @@ jobs:
                     deploymentMode: 'Incremental'
                     deploymentOutputs: 'ArmOutputs'
                     overrideParameters: >
-                      -dataFactoryName "${{ parameters.resource.dataFactoryName }}"
-                      -storageAccountName "${{ parameters.resource.storageAccountName }}"
-                      -blobContainerName "${{ parameters.resource.blobContainerName }}"
-                      -databricksWorkspaceName "${{ parameters.resource.databricksWorkspaceName }}"
-
+                      -dataFactoryName "${{ parameters.resource.dataFactory.name }}"
+                      -storageAccountName "${{ parameters.resource.storageAccount.name }}"
+                      -blobContainerName "${{ parameters.resource.blobContainer.name }}"
+                      -databricksWorkspaceName "${{ parameters.resource.databricksWorkspace.name }}"
                 
-                # - task: AzureResourceManagerTemplateDeployment@3
-                #   displayName: 'ARM Template deployment: Resource Group scope'
-                #   inputs:
-                #     azureResourceManagerConnection: 'MVP Sponsorship'
-                #     subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
-                #     resourceGroupName: 'RG-ARMTest'
-                #     location: 'North Europe'
-                #     csmFile: '$(System.DefaultWorkingDirectory)/_TesteADF/datafactory5zpayvr2rt6ki/ARMTemplateForFactory.json'
-                #     csmParametersFile: '$(System.DefaultWorkingDirectory)/_TesteADF/datafactory5zpayvr2rt6ki/ARMTemplateParametersForFactory.json'
-                #     overrideParameters: '-factoryName "adf-westeste" -AzureDatabricks1_domain "https://adb-4201552957767638.18.azuredatabricks.net" -AzureDatabricks1_workspaceResourceId "/subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/resourceGroups/RG-ARMdatapipeline/providers/Microsoft.Databricks/workspaces/databricks-udp2" -AzureDatabricks1_existingClusterId "0513-164630-wok371" -ArmtemplateStorageLinkedService_serviceEndpoint "https://storage5zpayvr2rt6ki.blob.core.windows.net/"'
-
-                  
                 # - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                 #     - task: AzureCLI@2
                 #       displayName: Create Cluster
@@ -139,42 +111,42 @@ jobs:
                 #       displayName: "Publish Unit Test Results"
                 #       condition: in(variables['Agent.JobStatus'], 'Succeeded', 'SucceededWithIssues', 'Failed')           
                 
-        deploy:
-          steps:
-            - task: DownloadBuildArtifacts@0
-              displayName: Downloading artifacts databricks
-              inputs:
-                buildType: 'current'
-                downloadType: 'single'
-                artifactName: 'application'
-                downloadPath: '$(System.ArtifactsDirectory)'
+        # deploy:
+        #   steps:
+        #     - task: DownloadBuildArtifacts@0
+        #       displayName: Downloading artifacts databricks
+        #       inputs:
+        #         buildType: 'current'
+        #         downloadType: 'single'
+        #         artifactName: 'application'
+        #         downloadPath: '$(System.ArtifactsDirectory)'
 
-            - task: AzureAppConfiguration@3
-              inputs:
-                azureSubscription: 'MVP Sponsorship'
-                ConfigstoreName: 'appconfig5zpayvr2rt6ki'
-                KeyFilter: '*'
-                Label: 'dev'
+        #     - task: AzureAppConfiguration@3
+        #       inputs:
+        #         azureSubscription: 'MVP Sponsorship'
+        #         ConfigstoreName: 'appconfig5zpayvr2rt6ki'
+        #         KeyFilter: '*'
+        #         Label: 'dev'
             
-            - task: UsePythonVersion@0
-              displayName: Configuring Python Version
-              inputs:
-                versionSpec: '3.x'
-                addToPath: true
-                architecture: 'x64'
+        #     - task: UsePythonVersion@0
+        #       displayName: Configuring Python Version
+        #       inputs:
+        #         versionSpec: '3.x'
+        #         addToPath: true
+        #         architecture: 'x64'
 
-            - task: riserrad.azdo-databricks.azdo-databricks-configuredatabricks.configuredatabricks@0
-              displayName: 'Configure Databricks CLI'
-              inputs:
-                url: 'https://adb-4201552957767638.18.azuredatabricks.net'
-                token: $(databricksAccessToken)
+        #     - task: riserrad.azdo-databricks.azdo-databricks-configuredatabricks.configuredatabricks@0
+        #       displayName: 'Configure Databricks CLI'
+        #       inputs:
+        #         url: 'https://adb-4201552957767638.18.azuredatabricks.net'
+        #         token: $(databricksAccessToken)
 
 
-            - powershell: |
-                Write-Host $(databricksAccessToken)
-                cat C:\Users\VssAdministrator\.databrickscfg
-                databricks workspace list --profile AZDO
-                databricks workspace import_dir -o --profile AZDO $(System.ArtifactsDirectory)/application/databricks/ /Shared/deployments
+        #     - powershell: |
+        #         Write-Host $(databricksAccessToken)
+        #         cat C:\Users\VssAdministrator\.databrickscfg
+        #         databricks workspace list --profile AZDO
+        #         databricks workspace import_dir -o --profile AZDO $(System.ArtifactsDirectory)/application/databricks/ /Shared/deployments
 
             # - task: deploynotebooks@0
             #   displayName: 'Deploy Notebooks to Workspace'
