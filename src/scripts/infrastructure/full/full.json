@@ -23,7 +23,7 @@
                 "description": "Name of the Azure storage account that contains the input/output data."
             }
         },
-        "blobContainer": {
+        "blobContainerName": {
             "type": "string",
             "defaultValue": "[concat('blob', uniqueString(resourceGroup().id))]",
             "metadata": {
@@ -66,7 +66,7 @@
                 {
                     "type": "blobServices/containers",
                     "apiVersion": "2019-06-01",
-                    "name": "[concat('default/', parameters('blobContainer'))]",
+                    "name": "[concat('default/', parameters('blobContainerName'))]",
                     "dependsOn": [
                         "[parameters('storageAccountName')]"
                     ]
