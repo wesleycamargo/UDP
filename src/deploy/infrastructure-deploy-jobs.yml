@@ -22,6 +22,8 @@ jobs:
                     artifactName: 'infrastructure'
                     downloadPath: '$(System.ArtifactsDirectory)'
 
+                - powershell: Write-Host ${{ parameters.resource }}
+
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
                     deploymentScope: 'Resource Group'
