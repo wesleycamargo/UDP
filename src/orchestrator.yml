@@ -25,7 +25,7 @@ stages:
               resourceConfiguration: ${{ resource }}
     
     - ${{ each resource in parameters.configuration.resources }}:
-      - ${{ and(eq(resource.type, 'infrastructure'),eq(resource.enabled, 'true') }}:
+      - ${{ and(eq(resource.type, 'infrastructure'),eq(resource.enabled, 'true')) }}:
           - template: .\build\infrastructure-build-jobs.yml 
             parameters: 
               resourceConfiguration: ${{ resource }}
