@@ -113,7 +113,6 @@ jobs:
                       -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
                       -tenant '$(tenant)'
                       -appConfigName ${{ parameters.configuration.appConfigName }} 
-                      -clusterName ${{ cluster.name }}
 
                 - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
                     - task: Pester@9

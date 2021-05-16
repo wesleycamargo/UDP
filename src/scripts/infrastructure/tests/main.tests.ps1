@@ -15,7 +15,8 @@ param(
   $customModulesDirectory,
   $tenant,
   $clusterName,
-  $clusterConfigurationFile
+  $clusterConfigurationFile,
+  $appconfigName
 )
 
 # Invoke-Pester -Script @{ Path =  '.\databricks.tests.ps1' } #; Parameters = @{spnClientId  = $spnClientId; spnClientSecret = $spnClientSecret} }
@@ -42,7 +43,8 @@ $container = New-PesterContainer -Path '.\databricks.tests.ps1' -Data @{ spnClie
                                                                          tenant = $tenant; `
                                                                          customModulesDirectory = $customModulesDirectory; `
                                                                          clusterName = $clusterName; `
-                                                                         clusterConfigurationFile = $clusterConfigurationFile
+                                                                         clusterConfigurationFile = $clusterConfigurationFile; `
+                                                                         appconfigName = $appconfigName
                                                                         }
 Invoke-Pester -Container $container
 

@@ -131,7 +131,7 @@ function Register-DatabricksPATIntoKeyVault {
     $return = az keyvault secret set --name $secretName --vault-name $keyVaultName --value $pat.token_value | ConvertFrom-Json
     Write-Host $return
     
-    if($return.value){
+    if ($return.value) {
         Write-Host "PAT successfully registered into Key Vault"
     }
     return $return
@@ -160,32 +160,104 @@ function Register-AppConfiguration {
 
     
     $return = az appconfig kv set -n $appconfigName --key databricksWorkspaceURL --label dev --value $databricksWorkspaceURL -y | ConvertFrom-Json
-    if($return.value){
+    if ($return.value) {
         Write-Host "databricksWorkspaceURL successfully registered into AppConfiguration"
     }
     
     $return = az appconfig kv set -n $appconfigName --key databricksResourceId --label dev --value $databricksResourceId -y | ConvertFrom-Json
-    if($return.value){
+    if ($return.value) {
         Write-Host "databricksResourceId successfully registered into AppConfiguration"
     }
 
-    if($null -ne $clusterName){
+    if ($null -ne $clusterName) {
         $clusters = Get-DatabricksClusters -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
         $clusters[0].cluster_id
 
         $return = az appconfig kv set -n $appconfigName --key databricksClusterId --label dev --value $clusters.clusters[0].cluster_id -y | ConvertFrom-Json
-        if($return.value){
+        if ($return.value) {
             Write-Host "databricksClusterId successfully registered into AppConfiguration"
         }
     }
     
     $return = az appconfig kv set-keyvault -n $appconfigName --key $keyVaultPATSecretName --label $label --secret-identifier $keyVaultPATSecretValue -y | ConvertFrom-Json
-    if($return.value){
+    if ($return.value) {
         Write-Host "$keyVaultPATSecretName successfully linked into AppConfiguration"
     }
 }
 
 
+function New-DatabricksCluster {
+    param (
+        [string]$clusterName,
+        [string]$clusterConfigurationFile,
+        [string]$tenant,
+        [string]$spnClientId,
+        [string]$spnClientSecret,
+        [string]$databricksWorkspaceName,
+        [string]$databricksWorkspaceResourceGroup,
+        [string]$appconfigName
+    )
+
+    $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+
+    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
+    $databricksResourceId = $databricksWorkspace.id
+
+    $adToken = Get-ActiveDirectoryToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+    $managementEndpointToken = Get-ManagementEndpointToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+
+    $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+    $header.Add("Authorization", "Bearer $adToken")
+    $header.Add("X-Databricks-Azure-SP-Management-Token", "$managementEndpointToken")
+    $header.Add("X-Databricks-Azure-Workspace-Resource-Id", "$databricksResourceId")
+
+    $clusterConfig = (Get-Content $clusterConfigurationFile | ConvertFrom-Json) 
+    $clusterConfig.cluster_name = $clusterName
+    $clusterConfig.idempotency_token = $clusterName
+
+    $existingClusters = Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/clusters/list" -Method "GET" -Headers $header
+
+    $clusters = $existingClusters.clusters | Where { $_.cluster_name -eq "$clusterName" }
+
+    if ($clusters.count -eq 0) {
+        $body = ($clusterConfig | ConvertTo-Json -Depth 10)
+
+        Write-Host "Creating cluster '$clusterName'..."
+        Write-Host $body
+    
+        $create = Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/clusters/create" -Method 'POST' -Headers $header -body $body
+        $create |  ConvertTo-Json -Depth 10
+
+        Write-Host "Cluster created with Id: $($create.cluster_id)"
+
+        $keyName = $databricksWorkspaceName + $clusterName + "Id"
+
+        # $clusters = Get-DatabricksClusters -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+        # $clusters[0].cluster_id
+    
+        $return = az appconfig kv set -n $appconfigName --key $keyName --label dev --value $create.cluster_id -y | ConvertFrom-Json
+        if ($return.value) {
+            Write-Host "databricksClusterId successfully registered into AppConfiguration"
+        }
+        
+
+        
+    }
+    else {
+        foreach ($cluster in $clusters) {
+
+            Write-Host "Cluster '$clusterName' already exists with id $($cluster.cluster_id)"
+            Write-Warning "Updating, this process will restart the cluster..."
+
+            $clusterConfig.cluster_id = $cluster.cluster_id
+            $body = ($clusterConfig | ConvertTo-Json -Depth 10)
+
+            Write-Host $body
+
+            Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/clusters/edit" -Method 'POST' -Headers $header -body $body
+        }
+    }
+}
 # $pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
 # Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName

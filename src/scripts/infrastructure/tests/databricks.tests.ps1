@@ -27,7 +27,8 @@ param(
   $customModulesDirectory,
 
   $clusterName,
-  $clusterConfigurationFile
+  $clusterConfigurationFile,
+  $appconfigName
 )
     
 Describe 'Register Information' {
@@ -39,6 +40,10 @@ Describe 'Register Information' {
     Import-Module $module -Force
 
     az login --service-principal --username $spnClientId --password $spnClientSecret --tenant $tenant
+
+    It 'Should create clusters' {
+        New-DatabricksCluster -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup  -appconfigName $appconfigName
+    }
 
     It 'Should return databricks clusters' {
         $clusters = Get-DatabricksClusters -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
@@ -83,4 +88,6 @@ Describe 'Register Information' {
         $databricksClusterId = az appconfig kv show -n appconfig5zpayvr2rt6ki --key databricksClusterId --label dev | ConvertFrom-Json
         $databricksClusterId.value | Should -Not -BeNullOrEmpty
     }
+
+   
 }        
