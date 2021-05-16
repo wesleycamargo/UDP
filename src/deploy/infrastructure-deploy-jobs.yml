@@ -54,10 +54,10 @@ jobs:
                     deploymentMode: 'Incremental'
                     deploymentOutputs: 'ArmOutputs'
                     overrideParameters: >
-                      -dataFactoryName '${{ parameters.resource.dataFactoryName }}'
-                      -storageAccountName '${{ parameters.resource.storageAccountName }}'
-                      -blobContainerName '${{ parameters.resource.blobContainerName }}'
-                      -databricksWorkspaceName '${{ parameters.resource.databricksWorkspaceName }}'
+                      -dataFactoryName "${{ parameters.resource.dataFactoryName }}""
+                      -storageAccountName "${{ parameters.resource.storageAccountName }}"
+                      -blobContainerName "${{ parameters.resource.blobContainerName }}"
+                      -databricksWorkspaceName "${{ parameters.resource.databricksWorkspaceName }}"
 
                 
                 # - task: AzureResourceManagerTemplateDeployment@3
