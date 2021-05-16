@@ -19,12 +19,13 @@ stages:
   jobs:
 
     - ${{ each resource in parameters.configuration.resources }}:
-      - ${{ if eq(resource.type, 'databricks') }}:
+      - ${{ and(if eq(resource.type, 'databricks'), if eq(resource.enabled, 'true')) }}:
           - template: .\build\databricks-build-jobs.yml 
             parameters: 
               resourceConfiguration: ${{ resource }}
+    
     - ${{ each resource in parameters.configuration.resources }}:
-      - ${{ if eq(resource.type, 'infrastructure') }}:
+      - ${{ and(if eq(resource.type, 'infrastructure'), if eq(resource.enabled, 'true') }}:
           - template: .\build\infrastructure-build-jobs.yml 
             parameters: 
               resourceConfiguration: ${{ resource }}

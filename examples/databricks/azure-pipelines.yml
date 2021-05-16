@@ -45,12 +45,13 @@ extends:
           storageAccountName: stgarmtemplate
           blobContainerName: containerarmtemplate
           databricksWorkspaceName: db-armtemplate
-          enabled: false
+          enabled: true
       
         - name: databricks-udp2
           type: databricks
           databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
           keyVaultPATSecretName: dbtoken
+          enabled: false
           infrastructure:
             enabled: false
             runTests: false
