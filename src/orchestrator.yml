@@ -62,19 +62,20 @@ stages:
 
     jobs:
         - ${{ each resource in parameters.configuration.resources }}:
-          - ${{ if eq(resource.type, 'databricks') }}:
-              - ${{ if eq(resource.enable, 'true') }}:
+          - ${{ if eq(resource.enable, 'true') }}:
+              - ${{ if eq(resource.type, 'databricks') }}:
                   - template: .\deploy\databricks-deploy-jobs.yml 
                     parameters:
                       resource: ${{ resource }}
                       configuration: ${{ parameters.configuration }}
+              - ${{ if eq(resource.type, 'infrastructure') }}:
+                  - template: .\deploy\infrastructure-deploy-jobs.yml 
+                    parameters:
+                      resource: ${{ resource }}
+                      configuration: ${{ parameters.configuration }}
         
-        - ${{ each resource in parameters.configuration.resources }}:
-          - ${{ if eq(resource.type, 'infrastructure') }}:
-              - template: .\deploy\infrastructure-deploy-jobs.yml 
-                parameters:
-                  resource: ${{ resource }}
-                  configuration: ${{ parameters.configuration }}
+        # - ${{ each resource in parameters.configuration.resources }}:
+          
 
 
   # - ${{ if eq(parameters.resourceType, 'dotnetcore') }}:    
