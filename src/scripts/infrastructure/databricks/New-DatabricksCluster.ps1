@@ -10,11 +10,12 @@ param (
     [string]$tenant,
     [string]$spnClientId,
     [string]$spnClientSecret,
-    [string]$customModulesDirectory
+    [string]$customModulesDirectory,
+    [string]$appconfigName
 )
 
 $module = "UDP.Deployment"
 $module = Join-Path -Path $customModulesDirectory -ChildPath "UDP.Deployment"
 Import-Module $module -Force
 
-New-DatabricksCluster -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+New-DatabricksCluster -clusterName $clusterName -clusterConfigurationFile $clusterConfigurationFile -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup -appconfigName $appconfigName

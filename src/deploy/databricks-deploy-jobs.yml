@@ -96,6 +96,7 @@ jobs:
                           -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
                           -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
                           -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
+                          -appConfigName ${{ parameters.configuration.appConfigName }} 
 
                 - task: AzureCLI@2
                   displayName: Register Databricks PAT
