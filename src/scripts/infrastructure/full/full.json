@@ -204,7 +204,7 @@
                 "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
                 "accessPolicies": [
                     {
-                        "objectId": "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+                        "objectId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
                         "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
                         "permissions": {
                             "secrets": ["list","get"]
