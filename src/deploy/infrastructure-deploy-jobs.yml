@@ -38,7 +38,7 @@ jobs:
                     csmFile: '$(System.ArtifactsDirectory)\infrastructure\full\full.json'
                     deploymentMode: 'Incremental'
                     deploymentOutputs: 'ArmOutputs'
-                    overrideParameters: |
+                    overrideParameters: >
                       -dataFactoryName '${{ parameters.resource.dataFactoryName }}'
                       -storageAccountName '${{ parameters.resource.storageAccountName }}'
                       -blobContainerName '${{ parameters.resource.blobContainerName }}'
