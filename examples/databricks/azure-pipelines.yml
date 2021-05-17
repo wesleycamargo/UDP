@@ -35,22 +35,22 @@ extends:
       - dev
       # - uat
     configuration:
-      keyVaultName: udp-keyvault
-      appConfigName: udp-appconfig
+      keyVaultName: udp-keyvault-armtemplate
+      appConfigName: udp-appconfig-armtemplate
       resourceGroup: RG-ARMIntrastructure
       resources:
         - name: data-platform-infrastructure
           type: data-platform-infrastructure
           enabled: true
           dataFactory:
-            name: udp-armtemplate
+            name: udp-dataFactory-armtemplate
           storageAccount:
             name: udpstgarmtemplate
           blobContainer:
             name: udpcontainerarmtemplate
           databricksWorkspace:
             keyVaultPATSecretName: dbtoken
-            name: udp-armtemplate
+            name: udp-databricksWorkspace-armtemplate
             clusters:
               - name: udp-cluster
                 clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
