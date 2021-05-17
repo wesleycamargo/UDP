@@ -79,8 +79,8 @@ jobs:
                       -tenant $(tenant)
                       -spnClientId $(spnClientId)
                       -spnClientSecret $(spnClientSecret)
-                      -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
-                      -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                      -databricksWorkspaceName "${{ parameters.resource.databricksWorkspace.name }}"
+                      -databricksWorkspaceResourceGroup ${{ parameters.configuration.resourceGroup }}
                       -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
 
                 # - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
