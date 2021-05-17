@@ -35,24 +35,24 @@ extends:
       - dev
       # - uat
     configuration:
-      keyVaultName: keyvault5zpayvr2rt6ki
-      appConfigName: appconfig5zpayvr2rt6ki
+      keyVaultName: udp-keyvault
+      appConfigName: udp-appconfig
       resourceGroup: RG-ARMIntrastructure
       resources:
         - name: infrastructure
           type: infrastructure
           enabled: true
           dataFactory:
-            name: adf-armtemplate
+            name: udp-armtemplate
           storageAccount:
             name: udpstgarmtemplate
           blobContainer:
-            name: containerarmtemplate
+            name: udpcontainerarmtemplate
           databricksWorkspace:
             keyVaultPATSecretName: dbtoken
-            name: db-armtemplate
+            name: udp-armtemplate
             clusters:
-              - name: new-cluster
+              - name: udp-cluster
                 clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
       
         - name: databricks-udp2
