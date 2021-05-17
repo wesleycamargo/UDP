@@ -33,7 +33,7 @@
         "roleNameGuid": {
             "type": "string",
             // "defaultValue": "[newGuid()]",
-            "defaultValue": "[guid(resourceGroup().id)]",
+            "defaultValue": "[guid(concat(resourceGroup().id,parameters('dataFactoryName')))]",
             "metadata": {
                 "description": "A new GUID used to identify the role assignment"
             }
