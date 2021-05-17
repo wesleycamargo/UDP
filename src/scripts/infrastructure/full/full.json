@@ -49,7 +49,53 @@
         "keyVaultName": {
             "type": "string",
             "defaultValue": "[concat('keyvault', uniqueString(resourceGroup().id))]"
+        },
+
+
+        "enabledForTemplateDeployment": {
+            "type": "bool",
+            "defaultValue": false,
+            "allowedValues": [
+                true,
+                false
+            ],
+            "metadata": {
+                "description": "Specifies whether Azure Resource Manager is permitted to retrieve secrets from the key vault."
+            }
+        },
+        "keysPermissions": {
+            "type": "array",
+            "defaultValue": [
+                "list",
+                "get"
+            ],
+            "metadata": {
+                "description": "Specifies the permissions to keys in the vault. Valid values are: all, encrypt, decrypt, wrapKey, unwrapKey, sign, verify, get, list, create, update, import, delete, backup, restore, recover, and purge."
+            }
+        },
+        "secretsPermissions": {
+            "type": "array",
+            "defaultValue": [
+                "list",
+                "get"
+            ],
+            "metadata": {
+                "description": "Specifies the permissions to secrets in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
+            }
+        },
+        "skuName": {
+            "type": "string",
+            "defaultValue": "Standard",
+            "allowedValues": [
+                "Standard",
+                "Premium"
+            ],
+            "metadata": {
+                "description": "Specifies whether the key vault is a standard vault or a premium vault."
+            }
         }
+
+
     },
     "variables": {
         "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
@@ -176,79 +222,36 @@
                         "contentType": "string"
                     }
                 }
-
-                // {
-                //     "type": "keyValues",
-                //     "apiVersion": "2020-07-01-preview",
-                //     "name": "[parameters('keyValueName')]",
-                //     "dependsOn": [
-                //         "[parameters('configStoreName')]"
-                //     ],
-                //     "properties": {
-                //         "value": "[string(variables('keyVaultRef'))]",
-                //         "contentType": "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
-                //     }
-                // }
             ]
         },
 
-{
-            "name": "[parameters('keyVaultName')]",
+        {
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2019-09-01",
+            "name": "[parameters('keyVaultName')]",
             "location": "[parameters('location')]",
             "properties": {
-                "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
+                "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+                "tenantId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.tenantId]",
+                "accessPolicies": [
+                    {
+                        "objectId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
+                        "tenantId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.tenantId]",
+                        "permissions": {
+                            "keys": "[parameters('keysPermissions')]",
+                            "secrets": "[parameters('secretsPermissions')]"
+                        }
+                    }
+                ],
                 "sku": {
-                    "family": "A",
-                    "name": "standard'"
+                    "name": "[parameters('skuName')]",
+                    "family": "A"
                 },
-                
-                "enableRbacAuthorization": true,
                 "networkAcls": {
                     "defaultAction": "Allow",
                     "bypass": "AzureServices"
                 }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]"
-            ]
+            }
         }
-
-
-
-        // {
-        //     "type": "Microsoft.KeyVault/vaults",
-        //     "apiVersion": "2019-09-01",
-        //     "name": "[parameters('keyVaultName')]",
-        //     "location": "[parameters('location')]",
-        //      "dependsOn": [
-        //         "[resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]"
-        //     ],
-        //     "properties": {
-        //         "enableRbacAuthorization": true,
-        //         "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
-        //         // "accessPolicies": [
-        //         //     {
-        //         //         "objectId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
-        //         //         "tenantId": "[tenantResourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName'))]",
-        //         //         "permissions": {
-        //         //             "secrets": [
-        //         //                 "Get",
-        //         //                 "List"
-        //         //             ]
-        //         //         }
-        //         //     }
-        //         // ],
-        //         "sku": {
-        //             "name": "Standard",
-        //             "family": "A"
-        //         },
-        //         "networkAcls": {
-        //             "defaultAction": "Allow",
-        //             "bypass": "AzureServices"
-        //         }
-        //     }
-        // }
     ]
 }
