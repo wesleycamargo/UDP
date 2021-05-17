@@ -28,14 +28,13 @@ jobs:
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
                     deploymentScope: 'Resource Group'
-                    # azureResourceManagerConnection: $(serviceConnection)
-                    azureResourceManagerConnection: 'MVP Sponsorship'
+                    azureResourceManagerConnection: $(serviceConnection)
                     subscriptionId: $(subscriptionId)
                     action: 'Create Or Update Resource Group'
                     resourceGroupName: ${{ parameters.configuration.resourceGroup }}
                     location: 'North Europe'
                     templateLocation: 'Linked artifact'
-                    csmFile: '$(System.ArtifactsDirectory)\infrastructure\full\full.json'
+                    csmFile: '$(System.ArtifactsDirectory)\infrastructure\data-platform\data-platform.json'
                     deploymentMode: 'Incremental'
                     deploymentOutputs: 'ArmOutputs'
                     overrideParameters: >
@@ -43,6 +42,8 @@ jobs:
                       -storageAccountName "${{ parameters.resource.storageAccount.name }}"
                       -blobContainerName "${{ parameters.resource.blobContainer.name }}"
                       -databricksWorkspaceName "${{ parameters.resource.databricksWorkspace.name }}"
+                      -keyVaultName "${{ parameters.configuration.keyVaultName }}"
+                      -appConfigurationName "${{ parameters.configuration.appConfigName }}"
                 
                 # - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                 #     - task: AzureCLI@2

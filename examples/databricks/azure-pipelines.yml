@@ -39,8 +39,8 @@ extends:
       appConfigName: udp-appconfig
       resourceGroup: RG-ARMIntrastructure
       resources:
-        - name: infrastructure
-          type: infrastructure
+        - name: data-platform-infrastructure
+          type: data-platform-infrastructure
           enabled: true
           dataFactory:
             name: udp-armtemplate
