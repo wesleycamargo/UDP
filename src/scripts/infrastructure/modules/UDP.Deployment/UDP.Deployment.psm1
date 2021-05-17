@@ -62,7 +62,7 @@ function Get-ManagementEndpointToken {
 #endregion ############### Tokens ####################
 
 
-function Get-DatabricksPAT {
+function New-DatabricksPAT {
     param (
         [string]$clusterName,
         [string]$clusterConfigurationFile,
@@ -225,7 +225,7 @@ function New-DatabricksCluster {
         }
     }
 }
-# $pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
+# $pat = New-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
 # Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
 

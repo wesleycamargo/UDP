@@ -51,9 +51,10 @@ $module = Join-Path -Path $customModulesDirectory -ChildPath "UDP.Deployment"
 
 Import-Module $module -Force
 
+Write-Host "Generating PAT..." -ForegroundColor Blue
+$pat = New-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
-$pat = Get-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
-
+Write-Host "Adding PAT to Key Vault..." -ForegroundColor Blue
 $secret = Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName
 
 $regex = "([\w.\/:]+\/secrets\/[\w]+)\/"
@@ -62,4 +63,5 @@ $secret -match $regex
 
 $secretId = $Matches[1]
 
+Write-Host "Referencing secret into App Configuration..." -ForegroundColor Blue
 Register-AppConfiguration -appconfigName $appConfigName -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup

@@ -49,6 +49,7 @@ extends:
           blobContainer:
             name: containerarmtemplate
           databricksWorkspace:
+            keyVaultPATSecretName: dbtoken
             name: db-armtemplate
             clusters:
               - name: new-cluster
