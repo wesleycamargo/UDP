@@ -70,7 +70,7 @@ jobs:
                     azureSubscription: $(ServiceConnectionName)
                     scriptLocation: "scriptPath"
                     scriptType: "pscore"
-                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\full\Register-AppConfig.ps1'
+                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\data-platform\Register-AppConfig.ps1'
                     arguments: >
                       -appConfigName ${{ parameters.configuration.appConfigName }} 
                       -keyVaultName ${{ parameters.configuration.keyVaultName }} 

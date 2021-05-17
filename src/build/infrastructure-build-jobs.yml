@@ -8,9 +8,9 @@ jobs:
     steps:
       - task: CopyFiles@2
         inputs:
-          sourceFolder: 'src\scripts\infrastructure\full'
+          sourceFolder: 'src\scripts\infrastructure\data-platform'
           contents: '**' 
-          targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\full'
+          targetFolder: '$(Build.ArtifactStagingDirectory)\infrastructure\data-platform'
         displayName: 'Copy Infrastructure'
 
       - task: CopyFiles@2
