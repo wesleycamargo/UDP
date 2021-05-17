@@ -76,6 +76,12 @@ jobs:
                       -keyVaultPATSecretName ${{ parameters.resource.databricksWorkspace.keyVaultPATSecretName }}
                       -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
                       -label 'develop'
+                      -tenant $(tenant)
+                      -spnClientId $(spnClientId)
+                      -spnClientSecret $(spnClientSecret)
+                      -databricksWorkspaceName $(ArmOutputs.databricksWorkspaceName)
+                      -databricksWorkspaceResourceGroup ${{ parameters.resource.databricksWorkspaceResourceGroup }}
+                      -customModulesDirectory '$(System.ArtifactsDirectory)/infrastructure/modules'
 
                 # - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
                 #     - task: Pester@9
