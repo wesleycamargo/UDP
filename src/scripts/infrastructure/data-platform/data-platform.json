@@ -94,8 +94,6 @@
                 "description": "Specifies whether the key vault is a standard vault or a premium vault."
             }
         }
-
-
     },
     "variables": {
         "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
@@ -232,6 +230,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+                "enableRbacAuthorization": true,
                 "tenantId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.tenantId]",
                 "accessPolicies": [
                     {
