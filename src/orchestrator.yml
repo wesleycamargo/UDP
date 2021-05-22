@@ -46,6 +46,7 @@ stages:
         condition: >-
           and( succeeded(),
             or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
                 startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
               )
             )
