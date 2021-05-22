@@ -62,7 +62,9 @@ $regex = "([\w.\/:]+\/secrets\/[\w]+)\/"
 
 $secret -match $regex
 
-$secretId = $Matches[1]
+$secretId = "https://$($Matches[1])"
+
+
 
 Write-Host "Referencing secret into App Configuration..." -ForegroundColor Blue
 Register-AppConfiguration -appconfigName $appConfigName -keyVaultPATSecretName $keyVaultPATSecretName -keyVaultPATSecretValue $secretId -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup -label $label
