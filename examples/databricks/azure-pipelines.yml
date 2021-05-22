@@ -37,7 +37,7 @@ extends:
     configuration:
       keyVaultName: udp-keyvault-armtemplate
       appConfigName: udp-appconfig-armtemplate
-      resourceGroup: RG-ARMIntrastructure
+      resourceGroup: RG-DataPipeline-Demo
       resources:
         - name: data-platform-infrastructure
           type: data-platform-infrastructure

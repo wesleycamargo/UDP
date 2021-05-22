@@ -73,15 +73,15 @@ jobs:
                     scriptType: "pscore"
                     scriptPath: '$(System.ArtifactsDirectory)\infrastructure\data-platform\Register-AppConfig.ps1'
                     arguments: >
-                      -appConfigName "${{ parameters.configuration.appConfigName }}" 
-                      -keyVaultName "${{ parameters.configuration.keyVaultName }}" 
+                      -appConfigName "${{ parameters.environment }}-${{ parameters.configuration.appConfigName }}" 
+                      -keyVaultName "${{ parameters.environment }}-${{ parameters.configuration.keyVaultName }}" 
                       -keyVaultPATSecretName "${{ parameters.resource.databricksWorkspace.keyVaultPATSecretName }}"
                       -customModulesDirectory "$(System.ArtifactsDirectory)/infrastructure/modules"
                       -label ${{ parameters.environment }}
                       -tenant "$(tenant)"
                       -spnClientId "$(spnClientId)"
                       -spnClientSecret "$(spnClientSecret)"
-                      -databricksWorkspaceName "${{ parameters.resource.databricksWorkspace.name }}"
+                      -databricksWorkspaceName "${{ parameters.environment }}-${{ parameters.resource.databricksWorkspace.name }}"
                       -databricksWorkspaceResourceGroup "${{ parameters.configuration.resourceGroup }}"
 
                 # - ${{ if eq( parameters.resource.infrastructure.runTests, true) }}:       
