@@ -73,6 +73,7 @@ stages:
                 parameters:
                   resource: ${{ resource }}
                   configuration: ${{ parameters.configuration }}
+                  environment: ${{ env }}
         
         # - ${{ each resource in parameters.configuration.resources }}:
           

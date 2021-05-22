@@ -3,7 +3,8 @@ parameters:
     type: object
   - name: resource
     type: object
-
+  - name: environment
+    type: string
 
 
 jobs:
@@ -76,7 +77,7 @@ jobs:
                       -keyVaultName "${{ parameters.configuration.keyVaultName }}" 
                       -keyVaultPATSecretName "${{ parameters.resource.databricksWorkspace.keyVaultPATSecretName }}"
                       -customModulesDirectory "$(System.ArtifactsDirectory)/infrastructure/modules"
-                      -label "develop"
+                      -label ${{ parameters.environment }}
                       -tenant "$(tenant)"
                       -spnClientId "$(spnClientId)"
                       -spnClientSecret "$(spnClientSecret)"
