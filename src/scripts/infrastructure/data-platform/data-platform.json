@@ -156,6 +156,25 @@
                         "[resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName'))]",
                         "[resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))]"
                     ]
+                },
+                {
+                    "name": "[concat(parameters('dataFactoryName'), '/AzureKeyVault')]",
+                    "type": "Microsoft.DataFactory/factories/linkedServices",
+                    "apiVersion": "2018-06-01",
+                    "properties": {
+                        "annotations": [],
+                        "type": "AzureKeyVault",
+                        "typeProperties": {
+                            // "baseUrl": "https://dev-udp-keyvault.vault.azure.net/"
+                            "baseUrl": "[reference(parameters('keyVaultName')).vaultUri]"
+
+
+                        }
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName'))]",
+                        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                    ]
                 }
             ]
         },
@@ -250,7 +269,24 @@
                     "defaultAction": "Allow",
                     "bypass": "AzureServices"
                 }
-            }
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.KeyVault/vaults/secrets",
+                    "apiVersion": "2019-09-01",
+                    "name": "[concat(parameters('keyVaultName'), '/', 'storageAccKey')]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                    ],
+                    "properties": {
+                        // "value": "[parameters('secretValue')]"
+                        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-04-01').keys[0].value]"
+                    }
+                }
+            ]
         }
-    ]
+    ],
+    "outputs": {
+    }
 }
