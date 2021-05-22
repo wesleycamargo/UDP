@@ -39,12 +39,12 @@ jobs:
                     deploymentMode: 'Incremental'
                     deploymentOutputs: 'ArmOutputs'
                     overrideParameters: >
-                      -dataFactoryName "${{ parameters.resource.dataFactory.name }}"
-                      -storageAccountName "${{ parameters.resource.storageAccount.name }}"
+                      -dataFactoryName "${{ parameters.environment }}-${{ parameters.resource.dataFactory.name }}"
+                      -storageAccountName "${{ parameters.environment }}${{ parameters.resource.storageAccount.name }}"
                       -blobContainerName "${{ parameters.resource.blobContainer.name }}"
-                      -databricksWorkspaceName "${{ parameters.resource.databricksWorkspace.name }}"
-                      -keyVaultName "${{ parameters.configuration.keyVaultName }}"
-                      -appConfigurationName "${{ parameters.configuration.appConfigName }}"
+                      -databricksWorkspaceName "${{ parameters.environment }}-${{ parameters.resource.databricksWorkspace.name }}"
+                      -keyVaultName "${{ parameters.environment }}-${{ parameters.configuration.keyVaultName }}"
+                      -appConfigurationName "${{ parameters.environment }}-${{ parameters.configuration.appConfigName }}"
                 
                 # - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                 #     - task: AzureCLI@2
