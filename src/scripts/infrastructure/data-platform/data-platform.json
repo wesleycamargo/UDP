@@ -98,7 +98,8 @@
     "variables": {
         "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
         "storageAccountContributorRoleId": "/subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
-        "managedResourceGroupName": "[concat('databricks-rg-', parameters('databricksWorkspaceName'), '-', uniqueString(parameters('databricksWorkspaceName'), resourceGroup().id))]"
+        "managedResourceGroupName": "[concat('databricks-rg-', parameters('databricksWorkspaceName'), '-', uniqueString(parameters('databricksWorkspaceName'), resourceGroup().id))]",
+        "storageAccountKey":"storageAccountKey"
     },
     "resources": [
         {
@@ -169,6 +170,29 @@
                             "baseUrl": "[reference(parameters('keyVaultName')).vaultUri]"
 
 
+                        }
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName'))]",
+                        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                    ]
+                },
+                {
+                    "name": "[concat(parameters('dataFactoryName'), '/AzureBlobStorage2')]",
+                    "type": "Microsoft.DataFactory/factories/linkedServices",
+                    "apiVersion": "2018-06-01",
+                    "properties": {
+                        "annotations": [],
+                        "type": "AzureBlobStorage",
+                        "typeProperties": {
+                            "connectionString": {
+                                "type": "AzureKeyVaultSecret",
+                                "store": {
+                                    "referenceName": "AzureKeyVault",
+                                    "type": "LinkedServiceReference"
+                                },
+                                "secretName": "[variables('storageAccountKey')]"
+                            }
                         }
                     },
                     "dependsOn": [
@@ -294,7 +318,7 @@
                 {
                     "type": "Microsoft.KeyVault/vaults/secrets",
                     "apiVersion": "2019-09-01",
-                    "name": "[concat(parameters('keyVaultName'), '/', 'storageAccKey')]",
+                    "name": "[concat(parameters('keyVaultName'), '/', variables('storageAccountKey'))]",
                     "location": "[parameters('location')]",
                     "dependsOn": [
                         "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
@@ -309,6 +333,6 @@
         }
     ],
     "outputs": {
-        
+
     }
 }
