@@ -270,8 +270,9 @@
                         "[parameters('appConfigurationName')]"
                     ],
                     "properties": {
-                        "value": "[concat('https://',reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))).workspaceUrl,'$',parameters('environment'))]",
-                        "contentType": "string"
+                        "value": "[concat('https://',reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))).workspaceUrl)]",
+                        "contentType": "string",
+                        "label": "[parameters('environment')]"
                     }
                 },
                 {
@@ -282,8 +283,9 @@
                         "[parameters('appConfigurationName')]"
                     ],
                     "properties": {
-                        "value": "[concat(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName')),'$',parameters('environment'))]",
-                        "contentType": "string"
+                        "value": "[resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))]",
+                        "contentType": "string",
+                        "label": "[parameters('environment')]"
                     }
                 }
             ]
