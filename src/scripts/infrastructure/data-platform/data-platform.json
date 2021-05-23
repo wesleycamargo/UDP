@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "environment": {
+            "type": "string"
+        },
         "dataFactoryName": {
             "type": "string",
             "defaultValue": "[concat('datafactory', uniqueString(resourceGroup().id))]",
@@ -267,7 +270,7 @@
                         "[parameters('appConfigurationName')]"
                     ],
                     "properties": {
-                        "value": "[concat('https://',reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))).workspaceUrl)]",
+                        "value": "[concat('https://',reference(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))).workspaceUrl,'$',parameters('environment'))]",
                         "contentType": "string"
                     }
                 },
@@ -279,7 +282,7 @@
                         "[parameters('appConfigurationName')]"
                     ],
                     "properties": {
-                        "value": "[resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName'))]",
+                        "value": "[concat(resourceId('Microsoft.Databricks/workspaces', parameters('databricksWorkspaceName')),'$',parameters('environment'))]",
                         "contentType": "string"
                     }
                 }

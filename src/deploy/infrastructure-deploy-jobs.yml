@@ -45,6 +45,7 @@ jobs:
                       -databricksWorkspaceName "${{ parameters.environment }}-${{ parameters.resource.databricksWorkspace.name }}"
                       -keyVaultName "${{ parameters.environment }}-${{ parameters.configuration.keyVaultName }}"
                       -appConfigurationName "${{ parameters.environment }}-${{ parameters.configuration.appConfigName }}"
+                      -environment "${{ parameters.environment }}"
                 
                 # - ${{ each cluster in parameters.resource.infrastructure.clusters }}:
                 #     - task: AzureCLI@2
