@@ -6,6 +6,7 @@ jobs:
   - job: databricksbuild
     displayName: Azure Databricks Build
     steps:
+    - checkout: UDP
 
     - task: CopyFiles@2
       inputs:
