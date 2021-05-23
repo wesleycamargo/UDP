@@ -96,34 +96,6 @@
             "metadata": {
                 "description": "Specifies whether the key vault is a standard vault or a premium vault."
             }
-        },
-        "configureGit": {
-            "defaultValue": false,
-            "type": "bool"
-        },
-        "gitRepoType": {
-            "defaultValue": "FactoryVSTSConfiguration",
-            "type": "string"
-        },
-        "gitAccountName": {
-            "defaultValue": "wesleycamargo",
-            "type": "string"
-        },
-        "gitProjectName": {
-            "defaultValue": "Sandbox",
-            "type": "string"
-        },
-        "gitRepositoryName": {
-            "defaultValue": "testegitadf",
-            "type": "string"
-        },
-        "gitCollaborationBranch": {
-            "defaultValue": "master",
-            "type": "string"
-        },
-        "gitRootFolder": {
-            "defaultValue": "/adf/",
-            "type": "string"
         }
     },
     "variables": {
@@ -172,7 +144,6 @@
                     "type": "Microsoft.DataFactory/factories/linkedServices",
                     "apiVersion": "2018-06-01",
                     "properties": {
-                        "repoConfiguration": "[if(bool(parameters('configureGit')), json('null'), json(concat('{\"type\": \"', parameters('gitRepoType'), '\",','\"accountName\": \"', parameters('gitAccountName'), '\",','\"repositoryName\": \"', parameters('gitRepositoryName'), '\",', if(equals(parameters('gitRepoType'), 'FactoryVSTSConfiguration'), concat('\"projectName\": \"', parameters('gitProjectName'), '\",'), ''),'\"collaborationBranch\": \"', parameters('gitCollaborationBranch'), '\",','\"rootFolder\": \"', parameters('gitRootFolder'), '\"}')))]",
                         "annotations": [],
                         "type": "AzureDatabricks",
                         "typeProperties": {
