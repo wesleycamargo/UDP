@@ -32,7 +32,7 @@ jobs:
                     resourceGroupName: ${{ parameters.configuration.resourceGroup }}
                     location: 'North Europe'
                     templateLocation: 'Linked artifact'
-                    csmFile: '$(System.ArtifactsDirectory)\infrastructure\data-platform\data-platform.json'
+                    csmFile: '$(System.ArtifactsDirectory)\infrastructure\dataplatform-batchprocessing\dataplatform-batchprocessing.json'
                     deploymentMode: 'Incremental'
                     deploymentOutputs: 'ArmOutputs'
                     overrideParameters: >
@@ -70,7 +70,7 @@ jobs:
                     azureSubscription: $(ServiceConnectionName)
                     scriptLocation: "scriptPath"
                     scriptType: "pscore"
-                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\data-platform\Register-AppConfig.ps1'
+                    scriptPath: '$(System.ArtifactsDirectory)\infrastructure\dataplatform-batchprocessing\Register-AppConfig.ps1'
                     arguments: >
                       -appConfigName "${{ parameters.environment }}-${{ parameters.configuration.appConfigName }}" 
                       -keyVaultName "${{ parameters.environment }}-${{ parameters.configuration.keyVaultName }}" 
