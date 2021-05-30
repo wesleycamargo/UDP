@@ -29,7 +29,7 @@ jobs:
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
                     deploymentScope: 'Resource Group'
-                    azureResourceManagerConnection: $(serviceConnection)
+                    azureResourceManagerConnection: $(serviceConnectionName)
                     subscriptionId: $(subscriptionId)
                     action: 'Create Or Update Resource Group'
                     resourceGroupName: ${{ parameters.configuration.resourceGroup }}
@@ -46,6 +46,17 @@ jobs:
                       -keyVaultName "${{ parameters.environment }}-${{ parameters.configuration.keyVaultName }}"
                       -appConfigurationName "${{ parameters.environment }}-${{ parameters.configuration.appConfigName }}"
                       -environment "${{ parameters.environment }}"
+
+                - task: AzureResourceManagerTemplateDeployment@3
+                  inputs:
+                    deploymentScope: 'Resource Group'
+                    azureResourceManagerConnection: 'MVP Sponsorship'
+                    subscriptionId: '337ba254-3aa0-4551-ba8e-89debefaa373'
+                    action: 'Create Or Update Resource Group'
+                    resourceGroupName: 'RG-UDP-DataPlatform-BatchProcessing'
+                    location: 'North Europe'
+                    templateLocation: 'Linked artifact'
+                    deploymentMode: 'Incremental'
 
                 
                 # - ${{ each cluster in parameters.resource.infrastructure.clusters }}:

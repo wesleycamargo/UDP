@@ -32,7 +32,7 @@ jobs:
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
                     deploymentScope: 'Resource Group'
-                    azureResourceManagerConnection: $(serviceConnection)
+                    azureResourceManagerConnection: $(serviceConnectionName)
                     subscriptionId: $(subscriptionId)
                     action: 'Create Or Update Resource Group'
                     resourceGroupName: ${{ parameters.resource.databricksWorkspaceResourceGroup }}
