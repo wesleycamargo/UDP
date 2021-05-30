@@ -26,7 +26,7 @@ stages:
                   resourceConfiguration: ${{ resource }}
 
         - ${{ if eq(resource.type, 'dataplatform-batchprocessing-infrastructure') }}:
-            - template: .\build\infrastructure-build-jobs.yml 
+            - template: .\build\dataplatform-batchprocessing-build-jobs.yml 
               parameters: 
                 resourceConfiguration: ${{ resource }}
 
@@ -70,7 +70,7 @@ stages:
                       resource: ${{ resource }}
                       configuration: ${{ parameters.configuration }}
           - ${{ if eq(resource.type, 'dataplatform-batchprocessing-infrastructure') }}:
-              - template: .\deploy\infrastructure-deploy-jobs.yml 
+              - template: .\deploy\dataplatform-batchprocessing-deploy-jobs.yml 
                 parameters:
                   resource: ${{ resource }}
                   configuration: ${{ parameters.configuration }}
