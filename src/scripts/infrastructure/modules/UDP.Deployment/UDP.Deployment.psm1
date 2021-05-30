@@ -13,17 +13,13 @@ function Get-DatabricksWorkspace {
     return az databricks workspace show -n $databricksWorkspaceName -g $databricksWorkspaceResourceGroup -o json --only-show-errors | ConvertFrom-Json
 }
 
-#region #################### Tokens ####################
-
-
 function Get-ActiveDirectoryToken {
     param (
         $tenant,
         $spnClientId,
-        $spnClientSecret
+        $spnClientSecret,
+        $resourceId
     )
-
-    $resourceId = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
 
     $body = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $body.Add("grant_type", "client_credentials")
@@ -34,39 +30,10 @@ function Get-ActiveDirectoryToken {
     $response = Invoke-RestMethod "https://login.microsoftonline.com/$tenant/oauth2/token" -Method "POST" -Body $body -ContentType "application/x-www-form-urlencoded"
 
     return $response.access_token
-
 }
 
-function Get-ManagementEndpointToken {
+function Get-DatabricksHeaderFromSPN {
     param (
-        $tenant,
-        $spnClientId,
-        $spnClientSecret
-    )
-    $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-    $resourceId = "https://management.core.windows.net/"
-
-    $body = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $body.Add("grant_type", "client_credentials")
-    $body.Add("client_id", "$spnClientId")
-    $body.Add("resource", "$resourceId")
-    $body.Add("client_secret", "$spnClientSecret")
-
-    $response = Invoke-RestMethod "https://login.microsoftonline.com/$tenant/oauth2/token"  -Method 'POST' -Body $body -Headers $header
-
-    return $response.access_token
-}
-
-#endregion ############### Tokens ####################
-
-
-function New-DatabricksPAT {
-    param (
-        [string]$clusterName,
-        [string]$clusterConfigurationFile,
-        # [string]$tenant,
         [string]$spnClientId,
         [string]$spnClientSecret,
         [string]$databricksWorkspaceName,
@@ -76,27 +43,25 @@ function New-DatabricksPAT {
     $subscriptionInfo = Get-SubscriptionInformation
 
     $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
-
-    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
     $databricksResourceId = $databricksWorkspace.id
 
-    $adToken = Get-ActiveDirectoryToken -tenant $subscriptionInfo.tenantId -spnClientId $spnClientId -spnClientSecret $spnClientSecret
-    $managementEndpointToken = Get-ManagementEndpointToken -tenant $subscriptionInfo.tenantId -spnClientId $spnClientId -spnClientSecret $spnClientSecret
+    #constant for databricks, it doesn't change
+    $databricksAdResource = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+    $databricksAdToken = Get-ActiveDirectoryToken -tenant $subscriptionInfo.tenantId -spnClientId $spnClientId -spnClientSecret $spnClientSecret -resourceId $databricksAdResource
+    
+    $managementEnpointResource = "https://management.core.windows.net/"
+    $managementEndpointAdToken = Get-ActiveDirectoryToken -tenant $subscriptionInfo.tenantId -spnClientId $spnClientId -spnClientSecret $spnClientSecret -resourceId $managementEnpointResource
 
     $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $header.Add("Authorization", "Bearer $adToken")
-    $header.Add("X-Databricks-Azure-SP-Management-Token", "$managementEndpointToken")
+    $header.Add("Authorization", "Bearer $databricksAdToken")
+    $header.Add("X-Databricks-Azure-SP-Management-Token", "$managementEndpointAdToken")
     $header.Add("X-Databricks-Azure-Workspace-Resource-Id", "$databricksResourceId")
 
-    $pat = Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/token/create" -Method "POST" -Headers $header
-
-    return $pat
+    return $header
 }
 
 function Get-DatabricksClusters {
     param (
-        [string]$clusterName,
-        [string]$clusterConfigurationFile,
         [string]$tenant,
         [string]$spnClientId,
         [string]$spnClientSecret,
@@ -104,22 +69,38 @@ function Get-DatabricksClusters {
         [string]$databricksWorkspaceResourceGroup
     )
 
+    $header = Get-DatabricksHeaderFromSPN -spnClientId $spnClientId `
+        -spnClientSecret $spnClientSecret `
+        -databricksWorkspaceName $databricksWorkspaceName `
+        -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+
     $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
-
     $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
-    $databricksResourceId = $databricksWorkspace.id
-
-    $adToken = Get-ActiveDirectoryToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
-    $managementEndpointToken = Get-ManagementEndpointToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
-
-    $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $header.Add("Authorization", "Bearer $adToken")
-    $header.Add("X-Databricks-Azure-SP-Management-Token", "$managementEndpointToken")
-    $header.Add("X-Databricks-Azure-Workspace-Resource-Id", "$databricksResourceId")
 
     $existingClusters = Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/clusters/list" -Method "GET" -Headers $header
 
     return $existingClusters
+}
+
+function New-DatabricksPAT {
+    param (
+        [string]$spnClientId,
+        [string]$spnClientSecret,
+        [string]$databricksWorkspaceName,
+        [string]$databricksWorkspaceResourceGroup
+    )
+
+    $header = Get-DatabricksHeaderFromSPN -spnClientId $spnClientId `
+        -spnClientSecret $spnClientSecret `
+        -databricksWorkspaceName $databricksWorkspaceName `
+        -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+
+    $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
+
+    $pat = Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/token/create" -Method "POST" -Headers $header
+
+    return $pat
 }
 
 function Register-DatabricksPATIntoKeyVault {
@@ -165,18 +146,13 @@ function New-DatabricksCluster {
         [string]$appconfigName
     )
 
+    $header = Get-DatabricksHeaderFromSPN -spnClientId $spnClientId `
+        -spnClientSecret $spnClientSecret `
+        -databricksWorkspaceName $databricksWorkspaceName `
+        -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+
     $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
-
     $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"
-    $databricksResourceId = $databricksWorkspace.id
-
-    $adToken = Get-ActiveDirectoryToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
-    $managementEndpointToken = Get-ManagementEndpointToken -tenant $tenant -spnClientId $spnClientId -spnClientSecret $spnClientSecret
-
-    $header = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $header.Add("Authorization", "Bearer $adToken")
-    $header.Add("X-Databricks-Azure-SP-Management-Token", "$managementEndpointToken")
-    $header.Add("X-Databricks-Azure-Workspace-Resource-Id", "$databricksResourceId")
 
     $clusterConfig = (Get-Content $clusterConfigurationFile | ConvertFrom-Json) 
     $clusterConfig.cluster_name = $clusterName
@@ -225,6 +201,47 @@ function New-DatabricksCluster {
         }
     }
 }
+
+
+
+
+function New-DatabricksKeyVaultBackedScope {
+    param (
+        [string]$spnClientId,
+        [string]$spnClientSecret,
+        [string]$databricksWorkspaceName,
+        [string]$databricksWorkspaceResourceGroup,
+        [string]$keyVaultName
+    )        
+
+    
+    $header = Get-DatabricksHeaderFromSPN -spnClientId $spnClientId `
+        -spnClientSecret $spnClientSecret `
+        -databricksWorkspaceName $databricksWorkspaceName `
+        -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup
+
+    $databricksWorkspace = Get-DatabricksWorkspace -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup 
+    $databricksWorkspaceURL = "https://$($databricksWorkspace.workspaceUrl)"   
+
+
+    $body = @{
+        scope                  = 'my-simple-azure-keyvault-scope'
+        scope_backend_type     = 'AZURE_KEYVAULT'        
+ 
+        backend_azure_keyvault = @{
+            resource_id = '/subscriptions/f8354c08-de3d-4a67-95ae-c7cbdb37fbf6/resourceGroups/WeS06DvDasc14726/providers/Microsoft.KeyVault/vaults/ah-poc-keyvault'
+            dns_name    = 'https://ah-poc-keyvault.vault.azure.net/'            
+        }
+    } | ConvertTo-Json
+
+
+
+      
+
+    Invoke-RestMethod "$databricksWorkspaceURL/api/2.0/secrets/scopes/create" -Method 'POST' -Headers $header -Body $body -ContentType "application/json"
+
+}
+
 # $pat = New-DatabricksPAT -spnClientId $spnClientId -spnClientSecret $spnClientSecret -databricksWorkspaceName $databricksWorkspaceName -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup #-tenant $tenant 
 
 # Register-DatabricksPATIntoKeyVault -pat $pat -keyVaultName $keyVaultName -secretName $keyVaultPATSecretName

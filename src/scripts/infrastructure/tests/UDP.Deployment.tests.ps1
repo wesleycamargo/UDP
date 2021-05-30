@@ -89,5 +89,13 @@ Describe 'Register Information' {
         $databricksClusterId.value | Should -Not -BeNullOrEmpty
     }
 
+    # It 'Should create Databricks Key Vault Backed Scope' {
+    #     New-DatabricksKeyVaultBackedScope -spnClientId $spnClientId `
+    #         -spnClientSecret $spnClientSecret `
+    #         -databricksWorkspaceName $databricksWorkspaceName `
+    #         -databricksWorkspaceResourceGroup $databricksWorkspaceResourceGroup `
+    #         -keyVaultName $keyVaultName
+    # }  
+
    
 }        
