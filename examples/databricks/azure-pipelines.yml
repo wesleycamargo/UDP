@@ -45,7 +45,7 @@ extends:
           dataFactory:
             name: udp-dataFactory
           storageAccount:
-            name: udpstg
+            name: udpstorage
           blobContainer:
             name: udpcontainer
           databricksWorkspace:
