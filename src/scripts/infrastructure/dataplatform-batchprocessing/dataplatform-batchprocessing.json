@@ -211,7 +211,8 @@
             "properties": {
                 "roleDefinitionId": "[variables('storageAccountContributorRoleId')]",
                 "principalId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
-                "scope": "[resourceGroup().id]"
+                "scope": "[resourceGroup().id]",
+                "principalType": "ServicePrincipal"
             }
         },
         {
@@ -224,7 +225,8 @@
             "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
                 "principalId": "[reference(resourceId('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '2018-06-01', 'Full').identity.principalId]",
-                "scope": "[resourceGroup().id]"
+                "scope": "[resourceGroup().id]",
+                "principalType": "ServicePrincipal"
             }
         },
 
