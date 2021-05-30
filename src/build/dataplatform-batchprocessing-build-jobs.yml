@@ -4,7 +4,7 @@ parameters:
 
 jobs:
   - job: infrastructurebuild
-    displayName: Azure Infrastructure Build
+    displayName: Data Platform Batch Processing Build
     steps:
       - task: CopyFiles@2
         inputs:
