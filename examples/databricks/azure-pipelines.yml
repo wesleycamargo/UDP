@@ -18,7 +18,8 @@ pool:
 variables:
   - name: serviceConnection
     value: 'MVP Sponsorship'
-  # - name: ServiceConnectionName
+  - name: ServiceConnectionName
+    value: 'MVP Sponsorship'
   # - name: spnClientId
   # - name: spnClientSecret
   # - name: subscriptionId
