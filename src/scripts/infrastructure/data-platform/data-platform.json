@@ -195,7 +195,8 @@
                         }
                     },
                     "dependsOn": [
-                        "[concat(concat('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '/linkedServices/AzureKeyVault')]"
+                        "[concat(concat('Microsoft.DataFactory/factories/', parameters('dataFactoryName')), '/linkedServices/AzureKeyVault')]",
+                        "[resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName'))]"
                     ]
                 }
             ]
