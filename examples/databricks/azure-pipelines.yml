@@ -37,7 +37,7 @@ extends:
     resourceType: databricks
     environments:
       - dev
-      - uat
+      # - uat
     configuration:
       keyVaultName: udp-keyvault
       appConfigName: udp-appconfig

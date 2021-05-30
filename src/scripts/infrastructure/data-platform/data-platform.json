@@ -196,7 +196,8 @@
                     },
                     "dependsOn": [
                         "[resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName'))]",
-                        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+                        "[resourceId('Microsoft.DataFactory/factories/linkedServices', concat(parameters('dataFactoryName'), '/AzureKeyVault'))]"
                     ]
                 }
             ]
