@@ -41,7 +41,7 @@ extends:
     configuration:
       keyVaultName: udp-keyvault
       appConfigName: udp-appconfig
-      resourceGroup: RG-UDP-DataPlatform-BatchProcessing
+      resourceGroup: RG-DataOps
       resources:
         - name: dataplatform-batchprocessing-infrastructure
           type: dataplatform-batchprocessing-infrastructure
