@@ -39,22 +39,22 @@ extends:
       - dev
       # - uat
     configuration:
-      keyVaultName: dataops-keyvault
-      appConfigName: dataops-appconfig
+      keyVaultName: dataops-keyvault-wes
+      appConfigName: dataops-appconfig-wes
       resourceGroup: RG-DataOps
       resources:
         - name: dataplatform-batchprocessing-infrastructure
           type: dataplatform-batchprocessing-infrastructure
           enabled: true
           dataFactory:
-            name: dataops-dataFactory
+            name: dataops-dataFactory-wes
           storageAccount:
-            name: dataopsstorage
+            name: dataopsstoragewes
           blobContainer:
             name: dataopscontainer
           databricksWorkspace:
             keyVaultPATSecretName: dbtoken
-            name: dataops-databricksWorkspace
+            name: dataops-databricksWorkspace-wes
             clusters:
               - name: dataops-cluster
                 clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
