@@ -39,27 +39,27 @@ extends:
       - dev
       # - uat
     configuration:
-      keyVaultName: udp-keyvault
-      appConfigName: udp-appconfig
+      keyVaultName: dataops-keyvault
+      appConfigName: dataops-appconfig
       resourceGroup: RG-DataOps
       resources:
         - name: dataplatform-batchprocessing-infrastructure
           type: dataplatform-batchprocessing-infrastructure
           enabled: true
           dataFactory:
-            name: udp-dataFactory
+            name: dataops-dataFactory
           storageAccount:
-            name: udpstorage2
+            name: dataopsstorage
           blobContainer:
-            name: udpcontainer
+            name: dataopscontainer
           databricksWorkspace:
             keyVaultPATSecretName: dbtoken
-            name: udp-databricksWorkspace
+            name: dataops-databricksWorkspace
             clusters:
-              - name: udp-cluster
+              - name: dataops-cluster
                 clusterConfigurationFile: $(System.ArtifactsDirectory)\application\databricks\configuration\clusterconfig.json
       
-        - name: databricks-udp2
+        - name: databricks-dataops
           type: databricks
           databricksWorkspaceResourceGroup: "RG-ARMdatapipeline"
           keyVaultPATSecretName: dbtoken
