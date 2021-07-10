@@ -20,6 +20,15 @@ stages:
 
 - ${{ each env in parameters.environments }}:
   - stage:  ${{ env }}
+    jobs:
+      - ${{ each resource in parameters.configuration.resources }}:
+        - ${{ if eq(resource.type, 'dotnetcore') }}:
+            - ${{ if eq(resource.enabled, 'true') }}:
+                - template: .\deploy\dotnetcore-deploy-jobs.yml
+                  parameters:
+                    serviceConnection: serviceConnection
+                    resource: ${{ resource }}
+    
     # ${{ if eq(env, 'dev') }}:
     #   condition: >-
     #     and( succeeded(),
@@ -48,13 +57,13 @@ stages:
     #         )
     #     dependsOn: uat
 
-    jobs:
-      - ${{ each resource in parameters.configuration.resources }}:
-        - ${{ if eq(resource.type, 'dotnetcore') }}:
-            - ${{ if eq(resource.enabled, 'true') }}:
-                - template: .\deploy\dotnetcore-deploy-jobs.yml
-                  parameters:
-                    serviceConnection: serviceConnection
-                    resource: ${{ resource }}
+    # jobs:
+    #   - ${{ each resource in parameters.configuration.resources }}:
+    #     - ${{ if eq(resource.type, 'dotnetcore') }}:
+    #         - ${{ if eq(resource.enabled, 'true') }}:
+    #             - template: .\deploy\dotnetcore-deploy-jobs.yml
+    #               parameters:
+    #                 serviceConnection: serviceConnection
+    #                 resource: ${{ resource }}
                       
                       # configuration: ${{ parameters.configuration }}
