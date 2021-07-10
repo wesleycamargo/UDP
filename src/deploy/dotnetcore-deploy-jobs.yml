@@ -27,5 +27,5 @@ jobs:
                 ConnectionType: 'AzureRM'
                 azureSubscription: ${{ parameters.serviceConnection }} # 'ServiceConnection'
                 appType: 'webApp'
-                WebAppName: ${{ parameters.webAppName }} #'wa-udp-dotnetcore'
+                WebAppName: ${{ parameters.resource.azureWebApp.name }} #'wa-udp-dotnetcore'
                 packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'

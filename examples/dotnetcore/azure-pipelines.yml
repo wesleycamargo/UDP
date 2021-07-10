@@ -28,3 +28,5 @@ extends:
       resources:
         - type: dotnetcore
           enabled: true
+          webApp:
+            name: webAppUDP

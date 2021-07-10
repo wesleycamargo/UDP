@@ -54,5 +54,7 @@ stages:
               - ${{ if eq(resource.enabled, 'true') }}:
                   - template: .\deploy\dotnetcore-deploy-jobs.yml
                     parameters:
+                      serviceConnection: serviceConnection
                       resource: ${{ resource }}
+                      
                       # configuration: ${{ parameters.configuration }}
