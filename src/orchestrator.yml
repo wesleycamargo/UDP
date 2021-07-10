@@ -21,11 +21,11 @@ stages:
 # - ${{ each env in parameters.environments }}:
 - stage:  dev2 #${{ env }}
   jobs:
-    - ${{ each resource in parameters.configuration.resources }}:
-        - template: .\deploy\dotnetcore-deploy-jobs.yml
-          parameters:
-            serviceConnection: serviceConnection
-            resource: ${{ resource }}
+    # - ${{ each resource in parameters.configuration.resources }}:
+    - template: .\deploy\dotnetcore-deploy-jobs.yml
+      parameters:
+        serviceConnection: serviceConnection
+        resource: ${{ resource }}
           
         
           # - ${{ if eq(resource.type, 'dotnetcore') }}:
