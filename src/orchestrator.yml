@@ -2,18 +2,67 @@ parameters:
 - name: resourceType 
   type: string 
 - name: webAppName 
+  default: ''
   type: string
 - name: serviceConnection
+  default: ''  
   type: string
-  
-jobs:
-  - ${{ if eq(parameters.resourceType, 'dotnetcore') }}:    
-      - template: .\build\dotnetcore-build-jobs.yml
-  
-  - ${{ if eq(parameters.resourceType, 'nodejs') }}:
-      - template: .\build\nodejs-build-jobs.yml 
+- name: configuration
+  type: object
+- name: environments 
+  type: object
 
-  - template: .\deploy\azure-webapp-deploy-jobs.yml
-    parameters:
-      webAppName: ${{ parameters.webAppName }}
-      serviceConnection: ${{ parameters.serviceConnection }}
+
+stages:
+- stage: build
+  dependsOn: []
+  jobs:
+
+    - ${{ each resource in parameters.configuration.resources }}:
+        
+        
+        - ${{ if eq(resource.type, 'dotnetcore') }}:
+            - ${{ if eq(resource.enable, 'true') }}:
+              - template: .\build\dotnetcore-build-jobs.yml
+                # parameters: 
+                  # resourceConfiguration: ${{ resource }}
+
+- ${{ each env in parameters.environments }}:
+  - stage:  ${{ env }}
+    ${{ if eq(env, 'dev') }}:
+      condition: >-
+        and( succeeded(),
+          or( eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
+              startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
+              startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')
+            )
+          )
+      dependsOn: 
+        - build
+    ${{ if eq(env, 'uat') }}:
+        condition: >-
+          and( succeeded(),
+            or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
+              )
+            )
+        dependsOn: dev
+    ${{ if eq(env, 'prd') }}:
+        condition: >-
+          and( succeeded(),
+            or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
+              )
+            )
+        dependsOn: uat
+
+    jobs:
+        - ${{ each resource in parameters.configuration.resources }}:
+          
+          - ${{ if eq(resource.type, 'databricks') }}:
+              - ${{ if eq(resource.enable, 'true') }}:
+                  - template: .\deploy\dotnetcore-deploy-jobs.yml
+                    parameters:
+                      resource: ${{ resource }}
+                      # configuration: ${{ parameters.configuration }}
