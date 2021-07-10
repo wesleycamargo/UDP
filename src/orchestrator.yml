@@ -50,7 +50,7 @@ stages:
 
     jobs:
         - ${{ each resource in parameters.configuration.resources }}:
-          - ${{ if eq(resource.type, 'databricks') }}:
+          - ${{ if eq(resource.type, 'dotnetcore') }}:
               - ${{ if eq(resource.enabled, 'true') }}:
                   - template: .\deploy\dotnetcore-deploy-jobs.yml
                     parameters:
