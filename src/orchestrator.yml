@@ -20,14 +20,14 @@ stages:
 
 - ${{ each env in parameters.environments }}:
   - stage:  ${{ env }}
-    ${{ if eq(env, 'dev') }}:
-      condition: >-
-        and( succeeded(),
-          or( eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
-              startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
-              startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')
-            )
-          )
+    # ${{ if eq(env, 'dev') }}:
+    #   condition: >-
+    #     and( succeeded(),
+    #       or( eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
+    #           startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
+    #           startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')
+    #         )
+    #       )
       # dependsOn: 
       #   - build
     # ${{ if eq(env, 'uat') }}:
