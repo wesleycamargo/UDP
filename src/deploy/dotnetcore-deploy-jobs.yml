@@ -1,6 +1,4 @@
 parameters:
-- name: webAppName 
-  type: string
 - name: serviceConnection
   type: string
 - name: resource
