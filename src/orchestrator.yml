@@ -10,9 +10,7 @@ parameters:
 
 stages:
 - stage: build
-  dependsOn: []
   jobs:
-
     - ${{ each resource in parameters.configuration.resources }}:
         - ${{ if eq(resource.type, 'dotnetcore') }}:
             - ${{ if eq(resource.enable, 'true') }}:
