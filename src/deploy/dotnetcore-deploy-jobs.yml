@@ -8,7 +8,6 @@ jobs:
   - deployment: 
     displayName: Azure Web App Deployment
     environment: develop
-    dependsOn: BuildJob
     strategy:
       runOnce:
         deploy:
