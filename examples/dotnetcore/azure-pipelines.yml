@@ -27,3 +27,4 @@ extends:
     configuration:
       resources:
         - type: dotnetcore
+          enabled: true
