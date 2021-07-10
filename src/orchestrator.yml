@@ -48,7 +48,7 @@ stages:
 
       jobs:
         - ${{ each resource in parameters.configuration.resources }}:
-            - ${{ if eq(resource.type, 'dotnetcore') }}:
+            - ${{ if and(eq(resource.type, 'dotnetcore'), eq(resource.deployment.type, 'azureWebApp')) }}:
                 - ${{ if eq(resource.enabled, 'true') }}:
                     - template: .\deploy\dotnetcore-deploy-jobs.yml
                       parameters:
