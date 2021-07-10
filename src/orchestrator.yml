@@ -20,6 +20,35 @@ stages:
 
 - ${{ each env in parameters.environments }}:
     - stage:  ${{ env }}
+
+      ${{ if eq(env, 'dev') }}:
+        condition: >-
+          and( succeeded(),
+            or( eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
+                startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')
+              )
+            )
+        dependsOn: 
+          - build
+      ${{ if eq(env, 'uat') }}:
+          condition: >-
+            and( succeeded(),
+              or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
+                  startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
+                  startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
+                )
+              )
+          dependsOn: dev
+      ${{ if eq(env, 'prd') }}:
+          condition: >-
+            and( succeeded(),
+              or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
+                  startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
+                )
+              )
+          dependsOn: uat
+
       jobs:
         - ${{ each resource in parameters.configuration.resources }}:
             - ${{ if eq(resource.type, 'dotnetcore') }}:
@@ -28,50 +57,3 @@ stages:
                       parameters:
                         serviceConnection: ${{ parameters.serviceConnection }}
                         resource: ${{ resource }}
-          
-        
-          # - ${{ if eq(resource.type, 'dotnetcore') }}:
-          #     - ${{ if eq(resource.enabled, 'true') }}:
-          #         - template: .\deploy\dotnetcore-deploy-jobs.yml
-          #           parameters:
-          #             serviceConnection: serviceConnection
-          #             resource: ${{ resource }}
-    
-    # ${{ if eq(env, 'dev') }}:
-    #   condition: >-
-    #     and( succeeded(),
-    #       or( eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
-    #           startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
-    #           startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')
-    #         )
-    #       )
-      # dependsOn: 
-      #   - build
-    # ${{ if eq(env, 'uat') }}:
-    #     condition: >-
-    #       and( succeeded(),
-    #         or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
-    #             startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'),
-    #             startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
-    #           )
-    #         )
-    #     dependsOn: dev
-    # ${{ if eq(env, 'prd') }}:
-    #     condition: >-
-    #       and( succeeded(),
-    #         or( startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'),
-    #             startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
-    #           )
-    #         )
-    #     dependsOn: uat
-
-    # jobs:
-    #   - ${{ each resource in parameters.configuration.resources }}:
-    #     - ${{ if eq(resource.type, 'dotnetcore') }}:
-    #         - ${{ if eq(resource.enabled, 'true') }}:
-    #             - template: .\deploy\dotnetcore-deploy-jobs.yml
-    #               parameters:
-    #                 serviceConnection: serviceConnection
-    #                 resource: ${{ resource }}
-                      
-                      # configuration: ${{ parameters.configuration }}

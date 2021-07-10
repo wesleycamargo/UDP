@@ -24,6 +24,7 @@ extends:
     serviceConnection: 'MVP Sponsorship'
     environments:
       - dev
+      - uat
     configuration:
       resources:
         - type: dotnetcore
