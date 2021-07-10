@@ -49,12 +49,12 @@ stages:
     #     dependsOn: uat
 
     jobs:
-        - ${{ each resource in parameters.configuration.resources }}:
-          - ${{ if eq(resource.type, 'dotnetcore') }}:
-              - ${{ if eq(resource.enabled, 'true') }}:
-                  - template: .\deploy\dotnetcore-deploy-jobs.yml
-                    parameters:
-                      serviceConnection: serviceConnection
-                      resource: ${{ resource }}
+      - ${{ each resource in parameters.configuration.resources }}:
+        - ${{ if eq(resource.type, 'dotnetcore') }}:
+            - ${{ if eq(resource.enabled, 'true') }}:
+                - template: .\deploy\dotnetcore-deploy-jobs.yml
+                  parameters:
+                    serviceConnection: serviceConnection
+                    resource: ${{ resource }}
                       
                       # configuration: ${{ parameters.configuration }}
