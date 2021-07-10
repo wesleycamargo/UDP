@@ -24,7 +24,7 @@ stages:
     - ${{ each resource in parameters.configuration.resources }}:
         - template: .\deploy\dotnetcore-deploy-jobs.yml
           parameters:
-            serviceConnection: serviceConnection
+            serviceConnection: ${{ parameters.serviceConnection }}
             resource: ${{ resource }}
           
         
