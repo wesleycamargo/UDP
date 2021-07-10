@@ -19,7 +19,7 @@ stages:
                   # resourceConfiguration: ${{ resource }}
 
 # - ${{ each env in parameters.environments }}:
-- stage:  dev2 #${{ env }}
+- stage:  dev #${{ env }}
   jobs:
     - ${{ each resource in parameters.configuration.resources }}:
         - template: .\deploy\dotnetcore-deploy-jobs.yml
