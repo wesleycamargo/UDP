@@ -1,9 +1,4 @@
 parameters:
-- name: resourceType 
-  type: string 
-- name: webAppName 
-  default: ''
-  type: string
 - name: serviceConnection
   default: ''  
   type: string
