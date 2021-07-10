@@ -22,6 +22,8 @@ extends:
   template: ..\..\src\orchestrator.yml
   parameters:
     serviceConnection: 'MVP Sponsorship'
+    environments:
+      - dev
     configuration:
       resources:
         - type: dotnetcore
