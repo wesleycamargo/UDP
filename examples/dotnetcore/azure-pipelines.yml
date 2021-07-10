@@ -31,8 +31,8 @@ extends:
         - type: dotnetcore
           enabled: true
           deployment:
-            azureWebApp:
-              name: webAppUDP
+            type: azureWebApp
+            name: webAppUDP
             infrastructure:
               enabled: false
             application:
