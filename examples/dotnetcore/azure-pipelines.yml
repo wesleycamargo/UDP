@@ -25,6 +25,7 @@ extends:
     environments:
       - dev
       - uat
+      - prd
     configuration:
       resources:
         - type: dotnetcore

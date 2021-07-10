@@ -15,8 +15,6 @@ stages:
         - ${{ if eq(resource.type, 'dotnetcore') }}:
             - ${{ if eq(resource.enabled, 'true') }}:
               - template: .\build\dotnetcore-build-jobs.yml
-                # parameters: 
-                  # resourceConfiguration: ${{ resource }}
 
 - ${{ each env in parameters.environments }}:
     - stage:  ${{ env }}
