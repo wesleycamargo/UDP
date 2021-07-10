@@ -36,4 +36,4 @@ extends:
             infrastructure:
               enabled: false
             application:
-              enabled: false
+              enabled: true
