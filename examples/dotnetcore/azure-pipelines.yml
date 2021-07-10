@@ -28,7 +28,7 @@ extends:
       - prd
     configuration:
       resources:
-        - type: dotnetcore
+        - type: dotnetCore
           enabled: true
           deployment:
             type: azureWebApp
