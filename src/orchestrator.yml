@@ -29,8 +29,7 @@ stages:
                 startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')
               )
             )
-        dependsOn: 
-          - build
+        dependsOn: build
       ${{ if eq(env, 'uat') }}:
           condition: >-
             and( succeeded(),
@@ -39,7 +38,7 @@ stages:
                   startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')
                 )
               )
-          dependsOn: dev
+          dependsOn: build
       ${{ if eq(env, 'prd') }}:
           condition: >-
             and( succeeded(),
