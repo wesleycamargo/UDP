@@ -12,14 +12,13 @@
 #   - main
 #   - feature/*
 
-# trigger:
-#   branches:
-#     include:
-#     - main
-#     - feature/*
-  # paths:
-  #   include:
-  #   - examples/sqlserver
+trigger:
+  branches:
+    include:
+    - feature/*
+  paths:
+    include:
+    - examples/datafactory
 
 
 trigger:
