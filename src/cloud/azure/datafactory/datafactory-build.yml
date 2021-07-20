@@ -30,9 +30,9 @@ jobs:
 
       - task: CopyFiles@2
         inputs:
-          SourceFolder: '$(build.artifactstagingdirectory)'
+          SourceFolder: '$(Build.Repository.LocalPath)'
           Contents: '**/artifacts/**'
-          TargetFolder: '$(Pipeline.Workspace)/datafactory'
+          TargetFolder: '$(build.artifactstagingdirectory)/datafactory'
 
 
 
