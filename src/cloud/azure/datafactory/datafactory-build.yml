@@ -24,12 +24,12 @@ jobs:
       - task: Npm@1
         inputs:
           command: 'custom'
-          customCommand: 'run build export $(Build.Repository.LocalPath)/examples/datafactory/src /subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/resourceGroups/RG-Datafactory/providers/Microsoft.DataFactory/factories/adf-testdeploywes ArmTemplate'
+          customCommand: 'run build export $(Build.Repository.LocalPath)/examples/datafactory/src /subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/resourceGroups/RG-Datafactory/providers/Microsoft.DataFactory/factories/adf-testdeploywes $(build.artifactstagingdirectory)/ArmTemplate'
           workingDir: '$(Build.Repository.LocalPath)/examples/datafactory/src'
         displayName: 'Validate and Generate ARM template'
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(Build.Repository.LocalPath)/ArmTemplate'
+          targetPath: '$(build.artifactstagingdirectory)/ArmTemplate'
           artifact: 'ArmTemplates'
           publishLocation: 'pipeline'
