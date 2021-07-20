@@ -16,6 +16,10 @@ jobs:
           verbose: true
         displayName: 'Install npm package'
 
+      - powershell: |
+          cd $(Build.Repository.LocalPath)/examples/datafactory/src
+          Get-ChildItem -Recurse
+
       - task: Npm@1
         inputs:
           command: 'custom'
