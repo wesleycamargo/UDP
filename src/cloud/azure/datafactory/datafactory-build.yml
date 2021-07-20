@@ -1,0 +1,29 @@
+parameters:
+- name: resource
+  type: object
+
+jobs:
+  - job: BuildJob
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '10.x'
+        displayName: 'Install Node.js'
+
+      - task: Npm@1
+        inputs:
+          command: 'install'
+          verbose: true
+        displayName: 'Install npm package'
+
+      - task: Npm@1
+        inputs:
+          command: 'custom'
+          customCommand: 'run build export $(Build.Repository.LocalPath) /subscriptions/337ba254-3aa0-4551-ba8e-89debefaa373/resourceGroups/RG-Datafactory/providers/Microsoft.DataFactory/factories/adf-testdeploywes ArmTemplate'
+        displayName: 'Validate and Generate ARM template'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(Build.Repository.LocalPath)/ArmTemplate'
+          artifact: 'ArmTemplates'
+          publishLocation: 'pipeline'
