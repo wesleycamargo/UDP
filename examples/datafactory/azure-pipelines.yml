@@ -8,18 +8,17 @@
 #     name: devopsnights/UDP
 #     ref: refs/heads/main
 
-trigger:
-  - main
-  - feature/*
-
 # trigger:
-#   branches:
-#     include:
-#     - main
-#     - feature/*
-  # paths:
-  #   include:
-  #   - examples/sqlserver
+#   - main
+#   - feature/*
+
+trigger:
+  branches:
+    include:
+    - feature/*
+  paths:
+    include:
+    - examples/datafactory
 
 pool:
   vmImage: 'windows-latest'
