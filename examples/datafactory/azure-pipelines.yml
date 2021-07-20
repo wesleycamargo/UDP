@@ -20,15 +20,6 @@ trigger:
     include:
     - examples/datafactory
 
-
-trigger:
-  branches:
-    include:
-    - feature/*
-  paths:
-    include:
-    - examples/datafactory
-
 pool:
   vmImage: 'windows-latest'
 
