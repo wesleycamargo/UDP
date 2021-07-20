@@ -23,7 +23,7 @@ stages:
                 parameters:
                   resource: ${{ resource }}
             - ${{ if eq(resource.type, 'datafactory') }}:
-              - template: ./sqlserver/datafactory-build-jobs.yml
+              - template: ./cloud/azure/datafactory/datafactory-build.yml
                 parameters:
                   resource: ${{ resource }}
 
