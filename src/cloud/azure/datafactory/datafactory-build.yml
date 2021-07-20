@@ -33,11 +33,12 @@ jobs:
           SourceFolder: '$(Build.Repository.LocalPath)'
           Contents: '**/artifacts/**'
           TargetFolder: '$(build.artifactstagingdirectory)/datafactory'
+          flattenFolders: true
 
 
 
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: '$(build.artifactstagingdirectory)/datafactory'
-          artifact: 'ArmTemplates'
+          artifact: 'datafactory'
           publishLocation: 'pipeline'
