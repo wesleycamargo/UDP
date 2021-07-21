@@ -33,7 +33,7 @@ jobs:
           SourceFolder: '$(Build.Repository.LocalPath)'
           Contents: '**/artifacts/**'
           TargetFolder: '$(build.artifactstagingdirectory)/datafactory'
-          flattenFolders: true
+          # flattenFolders: true
 
 
 
